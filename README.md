@@ -11,6 +11,9 @@ The interesting results are where the model behaves *unlike* a human learner.
 **Status: work in progress.** Some findings below were found after looking at the data and are being
 re-tested on fresh seeds (pre-registered in `CONCLUSIONS.md`). Treat them as preliminary.
 
+## Paper
+Working draft: [`paper/game-solving-paper.pdf`](paper/game-solving-paper.pdf) (source `paper/main.tex`). Updated as results land.
+
 ## Findings so far
 1. **Failure mechanism: acting against evidence the model already has.** An episode with even one action that
    contradicts earlier feedback almost never succeeds: coin weighing 24% vs 92% without, black-box function

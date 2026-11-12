@@ -4,3 +4,4 @@ __pycache__/
 .DS_Store
 adapters/
 runs_persistence_v0/
+paper/main.pdf
