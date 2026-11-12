@@ -50,12 +50,32 @@ def examples(ep: dict) -> list[dict]:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("dirs", nargs="+")
+    ap.add_argument("--clean", action="store_true", help="drop episodes with any contradiction, repeat, or invalid action")
+    ap.add_argument("--balance", action="store_true", help="balance turn-level examples equally across training games")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     eps = [json.loads(line) for d in a.dirs for line in (Path(d) / "episodes.jsonl").open()]
+    for e in eps:
+        if "seed" in e and e["seed"] >= 10_000:
+            raise ValueError(f"Leakage guard: eval seed {e['seed']} >= 10000 found in SFT input!")
     kept = [e for e in eps if e["env"] in {c.name for c in envs.TRAIN_GAMES} and keep(e)]
-    rows = [x for e in kept for x in examples(e)]
-    random.Random(0).shuffle(rows)
+    if a.clean:
+        import diagnose
+        kept = [e for e in kept if all(lbl == "ok" for lbl in diagnose.classify(e))]
+    rng = random.Random(0)
+    if a.balance and kept:
+        by_game: dict[str, list[dict]] = {}
+        for e in kept:
+            by_game.setdefault(e["env"], []).extend(examples(e))
+        target = max(len(v) for v in by_game.values())
+        rows = []
+        for g in sorted(by_game):
+            pool = by_game[g]
+            full_reps, rem = divmod(target, len(pool))
+            rows.extend(pool * full_reps + rng.sample(pool, rem))
+    else:
+        rows = [x for e in kept for x in examples(e)]
+    rng.shuffle(rows)
     n_valid = max(4, len(rows) // 20)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)

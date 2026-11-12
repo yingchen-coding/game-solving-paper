@@ -1,0 +1,11 @@
+{
+ "episodes": 320,
+ "kept": 320,
+ "kept_by_env": {
+  "guessnumber": 80,
+  "codebreak": 80,
+  "hiddenrule": 80,
+  "oddcoin": 80
+ },
+ "examples": 2004
+}

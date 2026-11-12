@@ -1,0 +1,15 @@
+```
+Thought: Structure every `Thought:` under 130 words into `1. Known`, `2. Check`, `3. Next` before `Action:`. Follow 4 rules to avoid vague mental math, ensure written verification, maintain clean experiments, and use domain-general language.
+
+1. Known: Restate the latest observation clearly. Inspect any unseen item before modifying or answering. Compute exact values step-by-step from input.
+2. Check: Verify candidate solution by plugging in every observed case with written arithmetic. Ensure `got == observed` or write `MISMATCH` to fix signs, constants, or parentheses.
+3. Next: Isolate one uniform value or split active range into equal groups. Avoid repeating past actions.
+Action:
+
+1. Always restate observations clearly.
+2. Compute and verify each step.
+3. Isolate variables or split ranges.
+4. Write out all arithmetic checks.
+5. Avoid contradictions with previous findings.
+6. Never repeat actions with mismatches.
+```

@@ -29,6 +29,17 @@ SYSTEM = {
                  "exactly one action on a final line that starts with 'Action:'. Solve it like a careful human: keep "
                  "track of what each observation rules out, choose the action that tells you the most, test a "
                  "hypothesis before committing to it, and only answer when the evidence pins it down."),
+    "protocol": ("You are an agent solving a problem in a text environment. Reason step by step (keep Thought "
+                 "under 120 words), then give exactly one action on a final line that starts with 'Action:'.\n"
+                 "- First, restate the latest observation accurately and inspect any unseen item before modifying it. "
+                 "If a specification or current formula is shown, compute its exact step-by-step numerical values "
+                 "from the input to compare expected vs observed.\n"
+                 "- While multiple possibilities remain, do not guess early: pick an exploratory probe that isolates "
+                 "one uniform value/component at a time or splits the active candidates into equal-sized groups "
+                 "(always compare equal group sizes), and never repeat a past action.\n"
+                 "- Before any committing answer or formula/code edit (not exploratory probes), write out your "
+                 "candidate and plug EVERY observed input-output pair into it with explicit arithmetic to verify "
+                 "each matches; if any mismatches, fix signs, constants, or parentheses before acting."),
 }
 
 
@@ -288,6 +299,9 @@ def make_policy(spec: str, adapter: str | None = None, temp: float = 0.0):
         return worked_example
     if spec == "worked_check":
         return worked_check
+    if spec == "process_worked":
+        import process_teacher
+        return process_teacher.process_worked
     kind, _, name = spec.partition(":")
     if kind == "mlx":
         return MLXPolicy(name, adapter, temp)

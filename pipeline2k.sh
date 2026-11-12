@@ -34,14 +34,15 @@ train data/q7_diverse adapters/q7_diverse
 train data/q7_workedcheck adapters/q7_workedcheck2
 ev stick_diverse --adapter adapters/q7_diverse --check-tool
 ev stick_workedcheck2 --adapter adapters/q7_workedcheck2 --check-tool
+# The three decisive tests first (Ying 2026-11-12): process-verified practice, analogy, self-explanation.
 train data/q7_procdiverse adapters/q7_procdiverse
-train data/q7_proc4 adapters/q7_proc4
 ev stick_procdiverse --adapter adapters/q7_procdiverse --check-tool
-ev stick_proc4 --adapter adapters/q7_proc4 --check-tool
 ev analogy --playbook playbooks/analogy.txt
-[ -s data/q7_selfexplain/stats.json ] || { gate; log "selfexplain data"; $P $S/selfexplain.py data/q7_procdiverse --out data/q7_selfexplain > runs/q7_selfexplain.log 2>&1; }
+[ -s data/q7_selfexplain/stats.json ] || { gate; log "selfexplain data"; $P $S/selfexplain.py data/q7_procdiverse --out data/q7_selfexplain > runs/q7_selfexplain.log 2>&1; yield_turn; }
 train data/q7_selfexplain adapters/q7_selfexplain
 ev stick_selfexplain --adapter adapters/q7_selfexplain --check-tool
+train data/q7_proc4 adapters/q7_proc4
+ev stick_proc4 --adapter adapters/q7_proc4 --check-tool
 NEAR="--envs lock,machine"
 ev near_plain $NEAR
 ev near_procdiverse $NEAR --adapter adapters/q7_procdiverse --check-tool

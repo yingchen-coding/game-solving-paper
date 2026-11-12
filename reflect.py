@@ -70,6 +70,31 @@ Rewrite the playbook as at most 8 short numbered rules for solving problems from
 new lessons support, drop what they contradict, merge duplicates. General rules only: no game names, no
 specific numbers. Output only the numbered rules."""
 
+OPERATIONAL_LESSON_PROMPT = """You just attempted an interactive reasoning problem and FAILED.
+
+{transcript}
+
+Outcome: FAILED. {reveal}
+Automated error audit of your actions: {audit}
+
+Notice why brief one-line thoughts failed: you jumped to an action without writing out step-by-step arithmetic checks against every observation, or repeated/kept a contradicted hypothesis.
+Write ONE concrete scratchpad execution rule telling your future self WHAT TO WRITE AND COMPUTE explicitly inside `Thought:` before `Action:`. General rule only: do not mention this game's name, rules, or specific numbers.
+Start with "Lesson:"."""
+
+OPERATIONAL_MERGE_PROMPT = """Current scratchpad playbook:
+{playbook}
+
+New diagnostic lessons from failed problems:
+{lessons}
+
+Synthesize a compact, domain-general Scratchpad Playbook (a 3-line scratchpad header telling yourself to structure every `Thought:` under 130 words into `1. Known`, `2. Check`, `3. Next` before `Action:`, followed by at most 6 short numbered rules).
+Requirements grounded in your failures:
+1. Override vague mental math: accurately restate the latest observation, inspect any unseen item before modifying or answering about it, and whenever a specification or expression is shown, compute its exact step-by-step numerical values from the input to compare expected vs observed.
+2. Mandatory written verification: before any final answer or edit, write your candidate and plug EVERY observed case into it with written arithmetic (`got == observed`); if any case mismatches, write `MISMATCH` and fix signs, constants, or parentheses. Never repeat a past action.
+3. Clean experimental design: while multiple possibilities remain, isolate one uniform value/component at a time (control of variables) or split the active range/set into equal-sized groups (always compare equal group sizes).
+4. Strictly domain-general: NO game names (no coins, codes, polynomials, number-guessing), NO task-specific jargon.
+Output ONLY the playbook text."""
+
 
 def compact(ep: dict) -> str:
     lines = []
@@ -85,7 +110,7 @@ def main():
     ap.add_argument("--reflector", help="model that writes lessons; default = the playing model itself")
     ap.add_argument("--rounds", type=int, default=3)
     ap.add_argument("--per-game", type=int, default=3)
-    ap.add_argument("--mode", default="free", choices=["free", "taxonomy", "noreveal", "contrastive"])
+    ap.add_argument("--mode", default="free", choices=["free", "taxonomy", "noreveal", "contrastive", "operational"])
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     out = Path(a.out)
@@ -108,7 +133,16 @@ def main():
                 reveal = "" if a.mode == "noreveal" else env.reveal()
                 outcome = "SOLVED" if ep["success"] else "FAILED"
                 error = None
-                if a.mode == "contrastive":
+                if a.mode == "operational":
+                    if ep["success"]:
+                        continue
+                    import diagnose
+                    ep_copy = {**ep, "seed": seed - 1}
+                    labs = diagnose.classify(ep_copy)
+                    bad_turns = [f"turn {i + 1}: {lb}" for i, lb in enumerate(labs) if lb != "ok"]
+                    audit = ", ".join(bad_turns) if bad_turns else "committed without sufficient observations"
+                    msg = OPERATIONAL_LESSON_PROMPT.format(transcript=compact(ep), reveal=reveal, audit=audit)
+                elif a.mode == "contrastive":
                     # a second, sampled attempt at the same problem; a lesson only when exactly one succeeded
                     player.sampler = make_sampler(temp=0.8)
                     ep2 = agents.run_episode(cls(seed - 1), player, "plain", playbook or None)
@@ -121,7 +155,7 @@ def main():
                     msg = TAXONOMY_PROMPT.format(transcript=compact(ep), outcome=outcome, reveal=reveal)
                 else:
                     msg = LESSON_PROMPT.format(transcript=compact(ep), outcome=outcome, reveal=reveal)
-                text = agents.complete(reflector, [{"role": "user", "content": msg}], 160)
+                text = agents.complete(reflector, [{"role": "user", "content": msg}], 200)
                 if a.mode == "taxonomy":
                     m = re.search(r"Error:\s*([A-E])", text)
                     error = m.group(1) if m else None
@@ -130,9 +164,11 @@ def main():
                 log.write(json.dumps({"round": r, "env": env.name, "seed": seed - 1, "success": ep["success"],
                                       "error": error, "lesson": lesson}) + "\n")
                 log.flush()
-        merged = agents.complete(reflector, [{"role": "user", "content": MERGE_PROMPT.format(
-            playbook=playbook or "(empty)", lessons="\n".join(f"- {x}" for x in lessons))}], 400)
-        playbook = merged.strip()
+        if lessons:
+            merge_tmpl = OPERATIONAL_MERGE_PROMPT if a.mode == "operational" else MERGE_PROMPT
+            merged = agents.complete(reflector, [{"role": "user", "content": merge_tmpl.format(
+                playbook=playbook or "(empty)", lessons="\n".join(f"- {x}" for x in lessons))}], 480)
+            playbook = re.sub(r"^```\w*\s*|\s*```$", "", merged.strip()).strip()
         (out / f"playbook_r{r}.txt").write_text(playbook + "\n")
         print(f"round {r}: train success {wins}/{total}")
     (out / "playbook.txt").write_text(playbook + "\n")
