@@ -1,0 +1,45 @@
+Fetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]Fetching 9 files: 100%|██████████| 9/9 [00:00<00:00, 3889.22it/s]
+{
+ "bugfix": {
+  "n": 30,
+  "success": 0.0,
+  "asked": 0.0,
+  "invalid_per_step": 0.0703125,
+  "steps": 12.8
+ },
+ "circuit": {
+  "n": 30,
+  "success": 0.0,
+  "asked": 0.0,
+  "invalid_per_step": 0.0,
+  "steps": 4.933333333333334
+ },
+ "codebreak": {
+  "n": 30,
+  "success": 0.03333333333333333,
+  "asked": 0.0,
+  "invalid_per_step": 0.0033444816053511705,
+  "steps": 9.966666666666667
+ },
+ "guessnumber": {
+  "n": 30,
+  "success": 0.16666666666666666,
+  "asked": 0.0,
+  "invalid_per_step": 0.3130081300813008,
+  "steps": 8.2
+ },
+ "hiddenrule": {
+  "n": 30,
+  "success": 0.0,
+  "asked": 0.0,
+  "invalid_per_step": 0.0,
+  "steps": 2.566666666666667
+ },
+ "oddcoin": {
+  "n": 30,
+  "success": 0.06666666666666667,
+  "asked": 0.0,
+  "invalid_per_step": 0.6666666666666666,
+  "steps": 4.6
+ }
+}

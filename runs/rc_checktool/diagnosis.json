@@ -1,0 +1,46 @@
+{
+ "bugfix": {
+  "actions": 131,
+  "ok": 0.43,
+  "contradicts": 0.38,
+  "invalid": 0.19,
+  "episodes": 10,
+  "success": 0,
+  "ep_with_contradicts": 10,
+  "ep_with_repeat": 0,
+  "ep_with_invalid": 6
+ },
+ "circuit": {
+  "actions": 49,
+  "ok": 0.9,
+  "invalid": 0.02,
+  "contradicts": 0.08,
+  "episodes": 10,
+  "success": 0,
+  "ep_with_contradicts": 4,
+  "ep_with_repeat": 0,
+  "ep_with_invalid": 1
+ },
+ "codebreak": {
+  "actions": 94,
+  "ok": 0.18,
+  "contradicts": 0.77,
+  "invalid": 0.05,
+  "episodes": 10,
+  "success": 1,
+  "ep_with_contradicts": 10,
+  "ep_with_repeat": 0,
+  "ep_with_invalid": 2
+ },
+ "hiddenrule": {
+  "actions": 43,
+  "ok": 0.7,
+  "invalid": 0.23,
+  "contradicts": 0.07,
+  "episodes": 10,
+  "success": 2,
+  "ep_with_contradicts": 3,
+  "ep_with_repeat": 0,
+  "ep_with_invalid": 4
+ }
+}

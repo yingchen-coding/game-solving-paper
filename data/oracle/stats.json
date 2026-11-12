@@ -1,0 +1,10 @@
+{
+ "episodes": 600,
+ "kept": 600,
+ "kept_by_env": {
+  "keymaze": 200,
+  "swapsort": 200,
+  "ledger": 200
+ },
+ "examples": 5205
+}

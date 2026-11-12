@@ -1,0 +1,16 @@
+Two solved problems of different kinds. Compare them: the method they share is what to use on any new problem.
+
+Example A (find the heavy coin among 9 with a balance):
+  Possible: 1-9. WEIGH 1 2 3 | 4 5 6 -> BALANCED. Each coin on the balance would have tipped it, so 1-6 are out. Possible: 7 8 9.
+  WEIGH 7 | 8 -> LEFT is heavier. Coin 8 or 9 would have tipped it right or left it balanced, so they are out. Possible: 7.
+  Before answering, recheck 7 against every weighing: weighing 1, 7 was off the balance -> balanced, matches; weighing 2, 7 on the left -> left heavier, matches. ANSWER 7.
+
+Example B (find a hidden formula f(x) = a*x*x + b*x + c):
+  f(0) = 3, f(1) = 5, f(2) = 11. Guess f(x) = 2*x + 3: predicts f(2) = 7, observed 11 -> disagrees, so it is out.
+  Solve: c = 3, a + b = 2, 4a + 2b = 8 -> a = 2, b = 0. Candidate 2*x*x + 3.
+  Before answering, recheck it against every observation: f(0) = 3 matches, f(1) = 5 matches, f(2) = 11 matches. ANSWER 2 * x * x + 3.
+
+What both share: (1) list what is still possible; (2) for each observation, work out what each possibility predicts
+and cross out every possibility whose prediction disagrees, with the arithmetic written out; (3) pick the next test
+whose result rules out the most; (4) before committing, recheck the candidate against every observation, and if
+any one disagrees it is not the answer. On a new problem, first say which steps of this shared method apply, then use them.

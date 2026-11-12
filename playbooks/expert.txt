@@ -1,0 +1,8 @@
+1. Before acting, write down what the evidence so far allows and what it rules out; act only inside what is still possible.
+2. If an action gave the same result as before, your hypothesis is wrong: change the hypothesis, never repeat the action.
+3. When a check fails after your fix, assume your fix is wrong before you assume the check is wrong.
+4. Choose the action whose result splits the remaining possibilities most evenly, so every result teaches you something.
+5. Compare expected with observed at an intermediate point to find where things first go wrong, then look only there.
+6. Collect enough evidence to pin the answer down uniquely (count the unknowns) before committing to it.
+7. Before you answer, check the answer against every observation you have; if any one disagrees, it is not the answer.
+8. Prefer the smallest change that explains all failures over a rewrite.

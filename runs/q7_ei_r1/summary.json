@@ -1,0 +1,59 @@
+{
+ "policy": "mlx:mlx-community/Qwen2.5-7B-Instruct-4bit",
+ "adapter": "adapters/q7_ei_r1",
+ "system": "plain",
+ "playbook": null,
+ "teacher": null,
+ "ledger": false,
+ "check_tool": false,
+ "by_env": {
+  "bugfix": {
+   "n": 20,
+   "success": 0.05,
+   "asked": 0.0,
+   "invalid_per_step": 0.02734375,
+   "steps": 12.8,
+   "repeat_rate": 0.1953125
+  },
+  "circuit": {
+   "n": 20,
+   "success": 0.05,
+   "asked": 0.0,
+   "invalid_per_step": 0.0,
+   "steps": 4.5,
+   "repeat_rate": 0.0
+  },
+  "codebreak": {
+   "n": 20,
+   "success": 0.05,
+   "asked": 0.0,
+   "invalid_per_step": 0.015544041450777202,
+   "steps": 9.65,
+   "repeat_rate": 0.12435233160621761
+  },
+  "guessnumber": {
+   "n": 20,
+   "success": 1.0,
+   "asked": 0.0,
+   "invalid_per_step": 0.0,
+   "steps": 7.05,
+   "repeat_rate": 0.0070921985815602835
+  },
+  "hiddenrule": {
+   "n": 20,
+   "success": 0.5,
+   "asked": 0.0,
+   "invalid_per_step": 0.1588785046728972,
+   "steps": 5.35,
+   "repeat_rate": 0.0
+  },
+  "oddcoin": {
+   "n": 20,
+   "success": 0.8,
+   "asked": 0.0,
+   "invalid_per_step": 0.0,
+   "steps": 3.8,
+   "repeat_rate": 0.0
+  }
+ }
+}

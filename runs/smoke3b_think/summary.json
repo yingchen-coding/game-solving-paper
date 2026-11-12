@@ -1,0 +1,50 @@
+{
+ "policy": "mlx:mlx-community/Qwen2.5-3B-Instruct-4bit",
+ "adapter": null,
+ "system": "plain",
+ "playbook": null,
+ "by_env": {
+  "bugfix": {
+   "n": 6,
+   "success": 0.0,
+   "asked": 0.0,
+   "invalid_per_step": 0.11538461538461539,
+   "steps": 13.0
+  },
+  "circuit": {
+   "n": 6,
+   "success": 0.0,
+   "asked": 0.0,
+   "invalid_per_step": 0.0,
+   "steps": 5.0
+  },
+  "codebreak": {
+   "n": 6,
+   "success": 0.16666666666666666,
+   "asked": 0.0,
+   "invalid_per_step": 0.2545454545454545,
+   "steps": 9.166666666666666
+  },
+  "guessnumber": {
+   "n": 6,
+   "success": 0.0,
+   "asked": 0.0,
+   "invalid_per_step": 0.05660377358490566,
+   "steps": 8.833333333333334
+  },
+  "hiddenrule": {
+   "n": 6,
+   "success": 0.0,
+   "asked": 0.0,
+   "invalid_per_step": 0.037037037037037035,
+   "steps": 4.5
+  },
+  "oddcoin": {
+   "n": 6,
+   "success": 0.5,
+   "asked": 0.0,
+   "invalid_per_step": 0.06896551724137931,
+   "steps": 4.833333333333333
+  }
+ }
+}

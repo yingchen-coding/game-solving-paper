@@ -1,0 +1,65 @@
+{
+ "bugfix": {
+  "actions": 274,
+  "ok": 0.54,
+  "contradicts": 0.33,
+  "repeat": 0.12,
+  "episodes": 20,
+  "success": 1,
+  "ep_with_contradicts": 19,
+  "ep_with_repeat": 12,
+  "ep_with_invalid": 0
+ },
+ "circuit": {
+  "actions": 94,
+  "ok": 0.89,
+  "contradicts": 0.1,
+  "invalid": 0.01,
+  "episodes": 20,
+  "success": 2,
+  "ep_with_contradicts": 9,
+  "ep_with_repeat": 0,
+  "ep_with_invalid": 1
+ },
+ "codebreak": {
+  "actions": 194,
+  "ok": 0.13,
+  "contradicts": 0.83,
+  "invalid": 0.04,
+  "episodes": 20,
+  "success": 1,
+  "ep_with_contradicts": 20,
+  "ep_with_repeat": 0,
+  "ep_with_invalid": 3
+ },
+ "guessnumber": {
+  "actions": 143,
+  "ok": 0.99,
+  "invalid": 0.01,
+  "episodes": 20,
+  "success": 20,
+  "ep_with_contradicts": 0,
+  "ep_with_repeat": 0,
+  "ep_with_invalid": 1
+ },
+ "hiddenrule": {
+  "actions": 88,
+  "ok": 0.81,
+  "contradicts": 0.19,
+  "episodes": 20,
+  "success": 2,
+  "ep_with_contradicts": 17,
+  "ep_with_repeat": 0,
+  "ep_with_invalid": 0
+ },
+ "oddcoin": {
+  "actions": 76,
+  "ok": 0.93,
+  "contradicts": 0.07,
+  "episodes": 20,
+  "success": 16,
+  "ep_with_contradicts": 4,
+  "ep_with_repeat": 0,
+  "ep_with_invalid": 0
+ }
+}

@@ -1,0 +1,55 @@
+#!/bin/bash
+# pipeline2i = 2h + process-verified worked examples (thoughts show every check's arithmetic) with CHECK before commit,
+# on 8 games vs 4 (same 240 episodes / 651 examples): stick_diverse showed the tool habit transfers in form but the
+# model narrates checks it never computed.
+# pipeline2h = 2g with LoRA via train_lora.py (grad clipping + NaN skip): mlx_lm lora went NaN at iter 30 on q7_diverse.
+# Both check-habit adapters retrained the same way so 4 vs 8 games differ only in the games.
+# pipeline2g = pipeline2f + diverse practice first. pipeline2f: runs alongside a second experimenter's jobs. Code is frozen in frozen/ (git HEAD c0ebdae,
+# max_tokens 256) so every condition stays comparable with the 13 finished ones; the live tree now has 640.
+# Only one 7B fits in 16 GB, so every step waits until no other model process is running.
+cd "$(dirname "$0")"
+P=.venv/bin/python
+S=frozen
+Q=mlx-community/Qwen2.5-7B-Instruct-4bit
+N=20
+PAT="evaluate.py|mlx_lm lora|mlx_lm.lora|collect.py|dream.py|train_lora.py|reflect.py"
+log() { echo "[$(date '+%F %T')] $*"; }
+gate() { while true; do
+  while pgrep -f "$PAT" > /dev/null; do sleep 20; done
+  sleep $((5 + RANDOM % 15)); pgrep -f "$PAT" > /dev/null || return 0; done; }
+train() {
+  [ -f "$2/adapters.safetensors" ] && return 0
+  gate; log "train $2"; $P $S/train_lora.py --model $Q --data "$1" --adapter-path "$2" --iters 200 --lr 2e-5 \
+     --num-layers 8 --max-seq-length 2048 --save-every 20 --steps-per-eval 50 --val-batches 4 > "$2.log" 2>&1; }
+ev() { [ -s runs/$1/summary.json ] && return 0; gate; log "$1"; $P $S/evaluate.py --policy mlx:$Q "${@:2}" --out runs/$1 --n $N > /dev/null 2>&1; }
+evr() { [ -s runs/$1/summary.json ] && return 0; gate; log "$1"; $P $S/evaluate.py --policy mlx:$Q "${@:2}" --seed0 10020 --n 40 --envs oddcoin,hiddenrule --out runs/$1 > /dev/null 2>&1; }
+
+# Variability of practice: check-before-commit on 8 games (4 + 4 new) vs 4, same 240 episodes and 651 examples.
+train data/q7_diverse adapters/q7_diverse
+train data/q7_workedcheck adapters/q7_workedcheck2
+ev stick_diverse --adapter adapters/q7_diverse --check-tool
+ev stick_workedcheck2 --adapter adapters/q7_workedcheck2 --check-tool
+train data/q7_procdiverse adapters/q7_procdiverse
+train data/q7_proc4 adapters/q7_proc4
+ev stick_procdiverse --adapter adapters/q7_procdiverse --check-tool
+ev stick_proc4 --adapter adapters/q7_proc4 --check-tool
+ev near_diverse --envs lock,machine --adapter adapters/q7_diverse --check-tool
+ev near_workedcheck2 --envs lock,machine --adapter adapters/q7_workedcheck2 --check-tool
+ev near_procdiverse --envs lock,machine --adapter adapters/q7_procdiverse --check-tool
+ev near_proc4 --envs lock,machine --adapter adapters/q7_proc4 --check-tool
+# Pre-registered replication of C2/C3 (CONCLUSIONS.md) on fresh seeds 10020-10059.
+evr rep_plain
+evr rep_expert --playbook playbooks/expert.txt
+evr rep_yell --teacher yell
+evr rep_strategy --system strategy
+evr rep_encourage --teacher encourage
+ev stick_workedcheck --adapter adapters/q7_workedcheck --check-tool
+NEAR="--envs lock,machine"
+ev near_plain $NEAR
+ev near_strategy $NEAR --system strategy
+ev near_ei_r1 $NEAR --adapter adapters/q7_ei_r1
+ev near_worked $NEAR --adapter adapters/q7_worked
+ev near_workedcheck $NEAR --adapter adapters/q7_workedcheck --check-tool
+ev near_checktool $NEAR --check-tool
+for s in selfcheck paraphrase opposite; do ev sys_$s --system $s; done
+log "pipeline2i done"

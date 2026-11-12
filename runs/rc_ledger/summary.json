@@ -1,0 +1,43 @@
+{
+ "policy": "mlx:mlx-community/Qwen2.5-7B-Instruct-4bit",
+ "adapter": null,
+ "system": "plain",
+ "playbook": null,
+ "teacher": null,
+ "ledger": true,
+ "check_tool": false,
+ "by_env": {
+  "bugfix": {
+   "n": 10,
+   "success": 0.0,
+   "asked": 0.0,
+   "invalid_per_step": 0.0,
+   "steps": 13.5,
+   "repeat_rate": 0.1259259259259259
+  },
+  "circuit": {
+   "n": 10,
+   "success": 0.0,
+   "asked": 0.0,
+   "invalid_per_step": 0.0,
+   "steps": 4.3,
+   "repeat_rate": 0.0
+  },
+  "codebreak": {
+   "n": 10,
+   "success": 0.2,
+   "asked": 0.0,
+   "invalid_per_step": 0.0,
+   "steps": 9.7,
+   "repeat_rate": 0.38144329896907214
+  },
+  "hiddenrule": {
+   "n": 10,
+   "success": 0.1,
+   "asked": 0.0,
+   "invalid_per_step": 0.03225806451612903,
+   "steps": 3.1,
+   "repeat_rate": 0.0
+  }
+ }
+}

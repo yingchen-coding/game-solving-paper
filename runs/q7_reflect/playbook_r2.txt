@@ -1,0 +1,8 @@
+1. Use a binary search strategy to efficiently narrow down possibilities by dividing the problem space in half with each step.
+2. Systematically test each hypothesis and use feedback to eliminate incorrect options, refining your guess based on the results.
+3. Always consider the simplest forms of the solution first and use feedback to incrementally refine your hypothesis.
+4. Use the nature of the feedback (correct, incorrect, or misplaced) to guide your next steps and further narrow down the solution.
+5. Set up a system of equations or constraints using the feedback to solve for unknowns and refine your solution.
+6. Ensure your hypotheses are consistent with all available data and be prepared to reassess your assumptions if the feedback contradicts them.
+7. Divide and test the possibilities systematically to narrow down the solution, using feedback to logically guide your next steps.
+8. Continuously refine your approach by eliminating possibilities and using feedback to isolate the correct solution efficiently.

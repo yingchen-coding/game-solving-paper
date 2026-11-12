@@ -1,0 +1,7 @@
+1. Use a binary search approach to efficiently narrow down possibilities by dividing the range in half with each step.
+2. Systematically test each possibility while using feedback to eliminate incorrect options and refine your guesses.
+3. Start with the simplest forms of the solution and incrementally refine your hypothesis based on feedback.
+4. Consider the general form of the solution and use feedback to test and refine your hypotheses.
+5. Use the information given to systematically eliminate possibilities and narrow down the solution space.
+6. Divide and test the possibilities to narrow down the solution, using feedback to guide your next steps logically.
+7. Always consider the simplest forms of the solution first and use feedback to incrementally refine your hypothesis.
