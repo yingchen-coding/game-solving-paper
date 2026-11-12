@@ -19,15 +19,15 @@ Q=mlx-community/Qwen2.5-7B-Instruct-4bit
 N=20
 PAT="\.venv/bin/python.*(selfexplain\.py|evaluate\.py|mlx_lm|collect\.py|dream\.py|train_lora\.py|reflect\.py)"
 log() { echo "[$(date '+%F %T')] $*"; }
-gate() { while true; do
-  while pgrep -f "$PAT" > /dev/null; do sleep 20; done
-  sleep $((5 + RANDOM % 15)); pgrep -f "$PAT" > /dev/null || return 0; done; }
+gate() {  # the other experimenter's queue starts its next job at once, so poll fast; yield_turn below gives it its turn back
+  while pgrep -f "$PAT" > /dev/null; do sleep 2; done; }
+yield_turn() { sleep 90; }
 train() {
   [ -f "$2/adapters.safetensors" ] && return 0
   gate; log "train $2"; $P $S/train_lora.py --model $Q --data "$1" --adapter-path "$2" --iters 200 --lr 2e-5 \
-     --num-layers 8 --max-seq-length 2048 --save-every 20 --steps-per-eval 50 --val-batches 4 > "$2.log" 2>&1; }
-ev() { [ -s runs/$1/summary.json ] && return 0; gate; log "$1"; $P $S/evaluate.py --policy mlx:$Q "${@:2}" --out runs/$1 --n $N > /dev/null 2>&1; }
-evr() { [ -s runs/$1/summary.json ] && return 0; gate; log "$1"; $P $S/evaluate.py --policy mlx:$Q "${@:2}" --seed0 10020 --n 40 --envs oddcoin,hiddenrule --out runs/$1 > /dev/null 2>&1; }
+     --num-layers 8 --max-seq-length 2048 --save-every 20 --steps-per-eval 50 --val-batches 4 > "$2.log" 2>&1; yield_turn; }
+ev() { [ -s runs/$1/summary.json ] && return 0; gate; log "$1"; $P $S/evaluate.py --policy mlx:$Q "${@:2}" --out runs/$1 --n $N > /dev/null 2>&1; yield_turn; }
+evr() { [ -s runs/$1/summary.json ] && return 0; gate; log "$1"; $P $S/evaluate.py --policy mlx:$Q "${@:2}" --seed0 10020 --n 40 --envs oddcoin,hiddenrule --out runs/$1 > /dev/null 2>&1; yield_turn; }
 
 # Variability of practice: check-before-commit on 8 games (4 + 4 new) vs 4, same 240 episodes and 651 examples.
 train data/q7_diverse adapters/q7_diverse
