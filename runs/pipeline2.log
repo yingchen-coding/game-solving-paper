@@ -19,3 +19,8 @@
 [2026-11-12 00:25:10] stick_diverse
 [2026-11-12 00:51:32] stick_diverse
 [2026-11-12 00:51:48] stick_workedcheck2
+[2026-11-12 13:10:05] train adapters/q7_procdiverse
+[2026-11-12 13:38:28] stick_procdiverse
+[2026-11-12 17:03:18] analogy
+[2026-11-12 19:03:00] selfexplain data
+./pipeline2k.sh: line 41: 22312 Terminated: 15          $P $S/selfexplain.py data/q7_procdiverse --out data/q7_selfexplain > runs/q7_selfexplain.log 2>&1

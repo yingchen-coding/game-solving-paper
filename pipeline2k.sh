@@ -17,7 +17,7 @@ P=.venv/bin/python
 S=frozen
 Q=mlx-community/Qwen2.5-7B-Instruct-4bit
 N=20
-PAT="\.venv/bin/python.*(selfexplain\.py|evaluate\.py|mlx_lm|collect\.py|dream\.py|train_lora\.py|reflect\.py)"
+PAT="\.venv/bin/python.*(evaluate\.py|mlx_lm|collect\.py|dream\.py|train_lora\.py|reflect\.py)"
 log() { echo "[$(date '+%F %T')] $*"; }
 gate() {  # the other experimenter's queue starts its next job at once, so poll fast; yield_turn below gives it its turn back
   while pgrep -f "$PAT" > /dev/null; do sleep 2; done; }
@@ -38,7 +38,7 @@ ev stick_workedcheck2 --adapter adapters/q7_workedcheck2 --check-tool
 train data/q7_procdiverse adapters/q7_procdiverse
 ev stick_procdiverse --adapter adapters/q7_procdiverse --check-tool
 ev analogy --playbook playbooks/analogy.txt
-[ -s data/q7_selfexplain/stats.json ] || { gate; log "selfexplain data"; $P $S/selfexplain.py data/q7_procdiverse --out data/q7_selfexplain > runs/q7_selfexplain.log 2>&1; yield_turn; }
+[ -s data/q7_selfexplain/stats.json ] || { gate; log "selfexplain data"; $P $S/selfexplain_collect.py data/q7_procdiverse --out data/q7_selfexplain > runs/q7_selfexplain.log 2>&1; yield_turn; }
 train data/q7_selfexplain adapters/q7_selfexplain
 ev stick_selfexplain --adapter adapters/q7_selfexplain --check-tool
 train data/q7_proc4 adapters/q7_proc4
