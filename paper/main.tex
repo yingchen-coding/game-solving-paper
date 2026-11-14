@@ -33,9 +33,10 @@ calls the verifier before every answer, it learns the habit---on never-practised
 0\% to 88\%), yet solves no more problems and writes ``all observations agree'' for answers it never checked.
 Comparing two solved cases, which helps people transfer, does worse than stating the rules. What works is
 self-explanation: with the same states and expert moves, training on reasoning the model wrote itself instead of
-the expert's prose lifts the black-box task from 4/20 to 12/20 (the expert prose gives 0--2/20) and, on
-never-practised problems, cuts episodes that contradict the model's own evidence from 13 to 2 and from 20 to 11
-of 20---though success there does not yet rise. Across all conditions one mechanism predicts failure: an episode
+the expert's prose lifts the black-box task from 4/20 to 12/20 (the expert prose gives 0--2/20), and on-policy
+distillation agrees; both gains are on practised tasks. Fewer evidence-contradicting actions on never-practised problems
+come from having the verifier available, not from the training: the same distilled model contradicts its evidence
+in 13 of 20 episodes without the tool and 5 with it. Across all conditions one mechanism predicts failure: an episode
 containing an action that contradicts the model's own earlier evidence almost never succeeds.
 \end{abstract}
 
@@ -130,6 +131,8 @@ Process-verified examples, 8 games & 16 & 1 & 2 & 15 & 1 & 0 & 34/80 & 1/40 \\
 Self-explanation, 8 games & 20 & 0 & 12 & 18 & 1 & 0 & 50/80 & 1/40 \\
 On-policy distillation$^\dagger$ & 19 & 1 & 15 & 8 & 2 & 0 & 43/80 & 2/40 \\
 On-policy distillation + tool$^\dagger$ & 16 & 1 & 17 & 14 & 2 & 0 & 48/80 & 2/40 \\
+Model-written operational rules$^\dagger$ & 20 & 1 & 9 & 13 & 1 & 1 & 43/80 & 2/40 \\
+Distillation + operational rules$^\dagger$ & 19 & 0 & 10 & 8 & 2 & 1 & 37/80 & 3/40 \\
 \bottomrule
 \end{tabular}}
 \caption{Problems solved out of 20 per task. ``Check habit'' conditions are fine-tuned on expert play that calls
@@ -230,25 +233,40 @@ right candidate.
 
 \begin{table}[h]
 \centering\small
-\begin{tabular}{lrrrr}
+\begin{tabular}{lcrrr}
 \toprule
- & HiddenRule & OddCoin & Circuit & BugFix \\
+ & CHECK tool & Circuit & BugFix & Practised solved \\
 \midrule
-Plain & 15 & 6 & 13 & 20 \\
-Process-verified, 8 games & 5 & 5 & 4 & 19 \\
-Self-explanation, 8 games & 2 & 0 & 2 & 11 \\
-On-policy distillation + tool & 3 & 7 & 5 & 18 \\
+Plain & no & 13 & 20 & 40/80 \\
+Fine-tune on worked examples & no & 12 & 18 & 45/80 \\
+On-policy distillation & no & 13 & 20 & 43/80 \\
+Model-written operational rules & no & 17 & 18 & 43/80 \\
+Distillation + operational rules & no & 12 & 18 & 37/80 \\
+CHECK tool, untrained & yes & 7 & 20 & 34/80 \\
+On-policy distillation + tool & yes & 5 & 18 & 48/80 \\
+Check habit, 4 games & yes & 2 & 20 & 38/80 \\
+Process-verified, 4 games & yes & 0 & 13 & 22/80 \\
+Process-verified, 8 games & yes & 4 & 19 & 34/80 \\
+Self-explanation, 8 games & yes & 2 & 11 & 50/80 \\
 \bottomrule
 \end{tabular}
-\caption{Episodes (of 20) containing an action that contradicts the model's own earlier evidence.}
+\caption{Episodes (of 20) on the never-practised problems containing an action that contradicts the model's own
+earlier evidence, by whether the CHECK tool is available at evaluation.}
 \label{tab:contra}
 \end{table}
 
-The mechanism transfers even where success does not: on the never-practised problems, self-explanation cuts
-contradicting episodes from 13 to 2 on Circuit ($p<.001$) and from 20 to 11 on BugFix ($p=.001$,
-Table~\ref{tab:contra}). Fewer contradictions are necessary but not sufficient: the remaining failures are wrong
-computations, not answers against the evidence. These comparisons were chosen after the first runs and are being
-re-tested on fresh seeds.
+Fewer contradictions on the never-practised problems come mainly from the CHECK tool, not from what the model was
+trained on (Table~\ref{tab:contra}). On Circuit the five conditions without the tool have 12--17 contradicting
+episodes of 20 and the six with it have 0--7. Within one model the effect is causal: the distilled model
+contradicts its evidence in 13 Circuit episodes without the tool and 5 with it ($p=.025$). Self-explanation (2) is
+not distinguishable from distillation with the tool (5, $p=.41$), so we withdraw the earlier reading that
+self-explanation transfers the mechanism; it is the tool. What remains is the practised games: among conditions
+with the tool, the two trained on the model's own reasoning solve the most (self-explanation 50/80, distillation
+48/80), and the three that imitate the expert's prose solve 22--38/80. BugFix shows no consistent pattern. Rules the
+model writes for itself after playing (``restate what is known, plug every candidate into every observed case,
+change one value at a time''), given as a prompt, do not help significantly (HiddenRule 9/20 vs 4/20, $p=.18$) and
+do not add to distillation (15 to 10/20, $p=.19$). These decompositions were made after seeing the data and are
+being re-tested on fresh seeds.
 
 \section{People versus LLMs}
 \begin{table}[h]
@@ -266,7 +284,8 @@ Variability of practice & varied practice transfers better & better tool use, no
 Given a free check & learners use it & rarely used & different \\
 Imitating narrated checks & --- & learns the claim, not the check & different \\
 Analogical comparison \citep{gentner2003} & comparing cases transfers better than rules & worse than rules (3 vs 11/20 weak task) & different \\
-Self-explanation \citep{chi1989} & own explanations transfer better & 4$\to$12/20; fewer contradictions on unpractised problems & partly (prelim.) \\
+Self-explanation \citep{chi1989} & own explanations transfer better & 4$\to$12/20 weak task, 50/80 practised; its gains on unpractised problems come from the tool & partly (practised only) \\
+Self-generated rules & knowing a rule $\neq$ using it & model-written rules as prompt: 4$\to$9/20, n.s. & same \\
 \bottomrule
 \end{tabular}}
 \caption{Each row is one classic finding, operationalised the same way on the model.}
