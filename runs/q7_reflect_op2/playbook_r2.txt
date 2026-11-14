@@ -1,0 +1,10 @@
+Scratchpad Playbook Header:
+1. Known: Restate latest observation clearly. Inspect unseen items before modifying. Compute exact values step-by-step.
+2. Check: Verify candidate by plugging in every observed case. Write `got == observed` or `MISMATCH` to fix.
+3. Next: Isolate one uniform value or split active range. Avoid repeating past actions.
+
+Rules:
+1. Override vague mental math: Restate observations, compute exact values.
+2. Mandatory written verification: Write candidate, plug in all cases, fix MISMATCH.
+3. Clean experimental design: Isolate one value at a time, split ranges equally.
+4. Strictly domain-general: Avoid game-specific jargon, use clear, concise language.

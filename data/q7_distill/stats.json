@@ -1,0 +1,10 @@
+{
+ "episodes": 120,
+ "kept": 58,
+ "kept_by_env": {
+  "guessnumber": 30,
+  "oddcoin": 19,
+  "hiddenrule": 9
+ },
+ "examples": 531
+}

@@ -43,6 +43,9 @@ train data/q7_selfexplain adapters/q7_selfexplain
 ev stick_selfexplain --adapter adapters/q7_selfexplain --check-tool
 train data/q7_proc4 adapters/q7_proc4
 ev stick_proc4 --adapter adapters/q7_proc4 --check-tool
+# Fresh-seed replication of the self-explanation effect (found after looking at the data): seeds 10020-10039, all tasks
+ev rep_selfexplain --adapter adapters/q7_selfexplain --check-tool --seed0 10020
+ev rep_plain_all --seed0 10020
 NEAR="--envs lock,machine"
 ev near_plain $NEAR
 ev near_procdiverse $NEAR --adapter adapters/q7_procdiverse --check-tool
