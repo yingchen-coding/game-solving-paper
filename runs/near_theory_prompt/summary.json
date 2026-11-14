@@ -1,0 +1,27 @@
+{
+ "policy": "mlx:mlx-community/Qwen2.5-7B-Instruct-4bit",
+ "adapter": null,
+ "system": "plain",
+ "playbook": "playbooks/theory.txt",
+ "teacher": null,
+ "ledger": false,
+ "check_tool": false,
+ "by_env": {
+  "lock": {
+   "n": 20,
+   "success": 0.05,
+   "asked": 0.0,
+   "invalid_per_step": 0.3112244897959184,
+   "steps": 9.8,
+   "repeat_rate": 0.25
+  },
+  "machine": {
+   "n": 20,
+   "success": 0.05,
+   "asked": 0.0,
+   "invalid_per_step": 0.012195121951219513,
+   "steps": 4.1,
+   "repeat_rate": 0.012195121951219513
+  }
+ }
+}

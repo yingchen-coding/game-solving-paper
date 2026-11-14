@@ -33,7 +33,9 @@ calls the verifier before every answer, it learns the habit---on never-practised
 0\% to 88\%), yet solves no more problems and writes ``all observations agree'' for answers it never checked.
 Comparing two solved cases, which helps people transfer, does worse than stating the rules. Near transfer, the
 easy kind for people, fails: the plain model solves 4/20 black-box problems and 13/20 of the identical problems
-renamed, and training gains on the first do not reach the second. What works is
+renamed, and training gains on the first do not reach the second. Stating the underlying theorems in the prompt
+(three values fix a quadratic, with the formula) leaves the practised games unchanged and drops the renamed problem
+from 13/20 to 1/20: the model announces that it is using the theory and stops doing the arithmetic. What works is
 self-explanation: with the same states and expert moves, training on reasoning the model wrote itself instead of
 the expert's prose lifts the black-box task from 4/20 to 12/20 (the expert prose gives 0--2/20), and on-policy
 distillation agrees; both gains are on practised tasks. Fewer evidence-contradicting actions on never-practised problems
@@ -135,6 +137,7 @@ On-policy distillation$^\dagger$ & 19 & 1 & 15 & 8 & 2 & 0 & 43/80 & 2/40 \\
 On-policy distillation + tool$^\dagger$ & 16 & 1 & 17 & 14 & 2 & 0 & 48/80 & 2/40 \\
 Model-written operational rules$^\dagger$ & 20 & 1 & 9 & 13 & 1 & 1 & 43/80 & 2/40 \\
 Distillation + operational rules$^\dagger$ & 19 & 0 & 10 & 8 & 2 & 1 & 37/80 & 3/40 \\
+Theorem summary prompt & 20 & 0 & 5 & 16 & 2 & 0 & 41/80 & 2/40 \\
 \bottomrule
 \end{tabular}}
 \caption{Problems solved out of 20 per task. ``Check habit'' conditions are fine-tuned on expert play that calls
@@ -288,6 +291,24 @@ acts in 96 of 114 replies. It learned to explain, and the step from explaining t
 practised. In people near transfer is the common kind and far transfer the rare one \citep{barnett2002}; for this
 model the unit that learning attaches to is the wording, not the skill.
 
+\subsection{Teaching the theory: stated theorems become inert}
+Schools teach the theorem first and the word problems after. We wrote a five-chapter textbook in abstract
+mathematical language with no game words: a quadratic is fixed by three values ($c=p(0)$,
+$a=(p(2)-2p(1)+p(0))/2$, $b=p(1)-p(0)-a$), halving an interval, eliminating hypotheses inconsistent with any
+observation, three-way splitting on a balance, and substituting a candidate into every observation before
+committing. Its six-line theorem summary, placed in the system prompt, changes nothing on the six games (41/80
+practised, 2/40 never practised, against 40/80 and 3/40 plain). On Machine, where the plain model already solves 13/20 by
+writing out the equations, the summary drops it to 1/20 (13 solved only without the summary, 1 only with it;
+exact $p=.002$). The final reply shrinks from a median of 387 to 131 characters; it says ``using the given
+theory, I can now calculate the coefficients'' and submits a wrong polynomial, and none of the 20 replies applies
+the stated formula. It writes the three equations about as often as without the summary (10 vs 12 of 20) but then
+skips the elimination and states coefficients (``solving these, I get $a=-1$, $b=-3$'' for $a+b=-4$, $4a+2b=-6$):
+1 of those 10 is right, against 8 of 12 when the model eliminates step by step without the summary.
+Whitehead warned against ``inert ideas'', ideas ``merely received into the mind without being utilised, or tested,
+or thrown into fresh combinations'' \citep{whitehead1929}. Here the received theorem is worse than inert: citing it
+replaces the working the model would otherwise have done. Training on the textbook's 500 worked exercises, the second
+half of the school recipe, is running.
+
 \section{People versus LLMs}
 \begin{table}[h]
 \centering\small
@@ -307,6 +328,7 @@ Imitating narrated checks & --- & learns the claim, not the check & different \\
 Analogical comparison \citep{gentner2003} & comparing cases transfers better than rules & worse than rules (3 vs 11/20 weak task) & different \\
 Self-explanation \citep{chi1989} & own explanations transfer better & 4$\to$12/20 weak task, 50/80 practised; its gains on unpractised problems come from the tool & partly (practised only) \\
 Self-generated rules & knowing a rule $\neq$ using it & model-written rules as prompt: 4$\to$9/20, n.s. & same \\
+Inert ideas \citep{whitehead1929} & stated theory is not applied & theorems in prompt: games unchanged; renamed task 13$\to$1/20 & same, stronger \\
 \bottomrule
 \end{tabular}}
 \caption{Each row is one classic finding, operationalised the same way on the model.}
