@@ -31,8 +31,12 @@ far. Two do not. The model rarely uses a free verifier it is given, and when it 
 calls the verifier before every answer, it learns the habit---on never-practised problems CHECK calls rise from
 2 of 99 actions to 70 of 114---and, with varied practice, learns to call an unseen tool correctly (well-formed calls
 0\% to 88\%), yet solves no more problems and writes ``all observations agree'' for answers it never checked.
-Across all conditions one mechanism predicts failure: an episode containing an action that contradicts the
-model's own earlier evidence almost never succeeds.
+Comparing two solved cases, which helps people transfer, does worse than stating the rules. What works is
+self-explanation: with the same states and expert moves, training on reasoning the model wrote itself instead of
+the expert's prose lifts the black-box task from 4/20 to 12/20 (the expert prose gives 0--2/20) and, on
+never-practised problems, cuts episodes that contradict the model's own evidence from 13 to 2 and from 20 to 11
+of 20---though success there does not yet rise. Across all conditions one mechanism predicts failure: an episode
+containing an action that contradicts the model's own earlier evidence almost never succeeds.
 \end{abstract}
 
 \section{Introduction}
@@ -120,10 +124,17 @@ Hint & 20 & 1 & 2 & 16 & 2 & 1 & 39/80 & 3/40 \\
 Coach names contradictions & 20 & 2 & 8 & 14 & 1 & 1 & 44/80 & 2/40 \\
 Check habit, 4 practice games & 20 & 0 & 0 & 18 & 3 & 0 & 38/80 & 3/40 \\
 Check habit, 8 practice games & 18 & 0 & 0 & 20 & 1 & 0 & 38/80 & 1/40 \\
+Analogical comparison prompt & 20 & 0 & 3 & 11 & 0 & 1 & 34/80 & 1/40 \\
+Process-verified examples, 4 games & 19 & 0 & 2 & 1 & 0 & 0 & 22/80 & 0/40 \\
+Process-verified examples, 8 games & 16 & 1 & 2 & 15 & 1 & 0 & 34/80 & 1/40 \\
+Self-explanation, 8 games & 20 & 0 & 12 & 18 & 1 & 0 & 50/80 & 1/40 \\
+On-policy distillation$^\dagger$ & 19 & 1 & 15 & 8 & 2 & 0 & 43/80 & 2/40 \\
+On-policy distillation + tool$^\dagger$ & 16 & 1 & 17 & 14 & 2 & 0 & 48/80 & 2/40 \\
 \bottomrule
 \end{tabular}}
 \caption{Problems solved out of 20 per task. ``Check habit'' conditions are fine-tuned on expert play that calls
-CHECK before every committing move and are evaluated with the tool available.}
+CHECK before every committing move and are evaluated with the tool available; the process-verified and
+self-explanation conditions are too. $^\dagger$Run by a second experimenter on the same machine and model.}
 \label{tab:main}
 \end{table}
 
@@ -206,6 +217,39 @@ with $x^2-5$'' (the answer is $3x-4$) and commits without calling the tool; on C
 with a value where a stage number is required and repeats the same call after the error. The validation loss of the
 eight-game run reached $0.0012$: the model had memorised the sentences that accompany a check.
 
+\subsection{What works: training on the model's own reasoning}
+The process-verified condition writes every check's arithmetic into the expert's reasoning; the self-explanation
+condition keeps exactly the same states and expert moves but asks the base model to explain, in its own words, why
+the expert's move is right, and trains on that explanation instead. On-policy distillation, run independently,
+lets the model play under a structured verification prompt with a coach, keeps its successes and trains without
+the prompt. Both kinds of self-generated reasoning help where imitation of the expert's prose hurts
+(Table~\ref{tab:main}): on HiddenRule, self-explanation solves 12/20 against 4/20 for plain ($p=.02$) and 0--2/20
+for the expert's prose ($p<.003$); distillation solves 15--17/20. With varied practice the process-verified model
+also learns to obey the verifier (committing a rejected candidate: 4 of 74 checks), but still cannot compute the
+right candidate.
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{lrrrr}
+\toprule
+ & HiddenRule & OddCoin & Circuit & BugFix \\
+\midrule
+Plain & 15 & 6 & 13 & 20 \\
+Process-verified, 8 games & 5 & 5 & 4 & 19 \\
+Self-explanation, 8 games & 2 & 0 & 2 & 11 \\
+On-policy distillation + tool & 3 & 7 & 5 & 18 \\
+\bottomrule
+\end{tabular}
+\caption{Episodes (of 20) containing an action that contradicts the model's own earlier evidence.}
+\label{tab:contra}
+\end{table}
+
+The mechanism transfers even where success does not: on the never-practised problems, self-explanation cuts
+contradicting episodes from 13 to 2 on Circuit ($p<.001$) and from 20 to 11 on BugFix ($p=.001$,
+Table~\ref{tab:contra}). Fewer contradictions are necessary but not sufficient: the remaining failures are wrong
+computations, not answers against the evidence. These comparisons were chosen after the first runs and are being
+re-tested on fresh seeds.
+
 \section{People versus LLMs}
 \begin{table}[h]
 \centering\small
@@ -221,8 +265,8 @@ Far transfer is rare & near only & none to far problems & same \\
 Variability of practice & varied practice transfers better & better tool use, not more solved & partly \\
 Given a free check & learners use it & rarely used & different \\
 Imitating narrated checks & --- & learns the claim, not the check & different \\
-Analogical comparison \citep{gentner2003} & comparing cases transfers better than rules & running & ? \\
-Self-explanation \citep{chi1989} & own explanations transfer better & running & ? \\
+Analogical comparison \citep{gentner2003} & comparing cases transfers better than rules & worse than rules (3 vs 11/20 weak task) & different \\
+Self-explanation \citep{chi1989} & own explanations transfer better & 4$\to$12/20; fewer contradictions on unpractised problems & partly (prelim.) \\
 \bottomrule
 \end{tabular}}
 \caption{Each row is one classic finding, operationalised the same way on the model.}
@@ -232,10 +276,10 @@ Self-explanation \citep{chi1989} & own explanations transfer better & running & 
 \section{Limitations and next steps}
 One model family at one size; 20 problems per task detects only large effects (about $\pm35$ points per task);
 greedy decoding makes any prompt change a perturbation, which is why guidance is compared with light-touch
-controls. Two findings are preliminary and are being re-tested on fresh seeds. Running now: process-verified worked
-examples that write out every check's arithmetic, analogical comparison of two solved cases, self-explanation
-(the model writes its own reasoning for the expert's moves), and near-transfer tests on Lock and Machine. Next:
-learning from erroneous examples, interleaved versus blocked practice, and a second model family.
+controls. Expertise reversal, pressure and self-explanation were found after looking at the data and are being
+re-tested on fresh seeds; near-transfer baselines on Lock and Machine are running. Next: learning from erroneous
+examples, interleaved versus blocked practice, combining self-explanation with on-policy practice, and a second
+model family.
 
 \section{Related work}
 Expert iteration and self-taught reasoning fine-tune on a model's own verified successes
