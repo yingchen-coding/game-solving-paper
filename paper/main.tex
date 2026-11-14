@@ -268,9 +268,9 @@ with the tool, the two trained on the model's own reasoning solve the most (self
 model writes for itself after playing (``restate what is known, plug every candidate into every observed case,
 change one value at a time''), given as a prompt, do not help significantly (HiddenRule 9/20 vs 4/20, $p=.18$) and
 do not add to distillation (15 to 10/20, $p=.19$). A caution on the self-explanation row: its explanations often
-run past the 256-token reply limit before the action line, which the evaluator scores as an invalid move
-(52\% of its actions on Circuit and 74\% on BugFix, against 0--16\% for every other condition), so its
-contradiction counts there are deflated; the tool comparison above uses the distilled model and is unaffected.
+never reach the action line, which the evaluator scores as an invalid move (52\% of its actions on Circuit and
+74\% on BugFix, against 0--16\% for every other condition; Section~3.6 shows this is looping, not lack of room),
+so its contradiction counts there are deflated; the tool comparison above uses the distilled model and is unaffected.
 These decompositions were made after seeing the data and are being re-tested on fresh seeds.
 
 \subsection{Near transfer: the gain stays with the wording}
@@ -281,8 +281,11 @@ $f$, $x$, \texttt{QUERY}, \texttt{ANSWER} become $g$, $n$, \texttt{INPUT}, \text
 HiddenRule; exact $p=.012$). Training does not carry across the rename either: distillation lifts HiddenRule from 4
 to 15--17/20, while the same models score 8--16/20 on Machine against the plain model's 13 (8 vs 13, $p=.21$;
 16 vs 13, $p=.48$); model-written rules give 6/20 ($p=.056$). On Lock, CodeBreak with letters, all conditions stay at
-0--4/20. The self-explanation model solves 0/20 Machine problems, but 100 of its 120 actions are explanations
-cut off before the action line; a rerun with a 512-token limit is under way. In people near transfer is the common kind and far transfer the rare one \citep{barnett2002}; for this
+0--4/20. The self-explanation model solves 0/20 Machine problems: 100 of its 120 replies never reach an action
+line, and doubling the reply limit to 512 tokens doubles their length (838 to 1572 characters) without adding
+actions (20/120); every one of those replies repeats its own sentences. On the practised wording the same model
+acts in 96 of 114 replies. It learned to explain, and the step from explaining to acting stayed with the words it
+practised. In people near transfer is the common kind and far transfer the rare one \citep{barnett2002}; for this
 model the unit that learning attaches to is the wording, not the skill.
 
 \section{People versus LLMs}
