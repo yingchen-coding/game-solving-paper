@@ -27,11 +27,13 @@ far-transfer problems that are never trained on. On Qwen2.5-7B-Instruct we run 1
 prompts, in-the-moment teachers and LoRA fine-tuning. Four findings carry over from people: worked examples
 improve the practised task, how-to guidance helps where the model is a novice and hurts where it is already good
 (expertise reversal, preliminary), pressure hurts and encouragement does nothing, and practice does not transfer
-far. Two do not. The model rarely uses a free verifier it is given, and when it is fine-tuned on expert play that
+far. Three do not. The model rarely uses a free verifier it is given, and when it is fine-tuned on expert play that
 calls the verifier before every answer, it learns the habit---on never-practised problems CHECK calls rise from
 2 of 99 actions to 70 of 114---and, with varied practice, learns to call an unseen tool correctly (well-formed calls
 0\% to 88\%), yet solves no more problems and writes ``all observations agree'' for answers it never checked.
-Comparing two solved cases, which helps people transfer, does worse than stating the rules. What works is
+Comparing two solved cases, which helps people transfer, does worse than stating the rules. Near transfer, the
+easy kind for people, fails: the plain model solves 4/20 black-box problems and 13/20 of the identical problems
+renamed, and training gains on the first do not reach the second. What works is
 self-explanation: with the same states and expert moves, training on reasoning the model wrote itself instead of
 the expert's prose lifts the black-box task from 4/20 to 12/20 (the expert prose gives 0--2/20), and on-policy
 distillation agrees; both gains are on practised tasks. Fewer evidence-contradicting actions on never-practised problems
@@ -268,6 +270,17 @@ change one value at a time''), given as a prompt, do not help significantly (Hid
 do not add to distillation (15 to 10/20, $p=.19$). These decompositions were made after seeing the data and are
 being re-tested on fresh seeds.
 
+\subsection{Near transfer: the gain stays with the wording}
+Machine is HiddenRule with new words: it subclasses the same environment, the same seed yields the same hidden
+polynomial (seed 10003 gives $x^2+14$ in both) with the same budget and the same stated information, and only
+$f$, $x$, \texttt{QUERY}, \texttt{ANSWER} become $g$, $n$, \texttt{INPUT}, \texttt{SUBMIT}. The plain model solves
+13/20 Machine problems but 4/20 of the identical HiddenRule problems (paired: 10 solved only as Machine, 1 only as
+HiddenRule; exact $p=.012$). Training does not carry across the rename either: distillation lifts HiddenRule from 4
+to 15--17/20, while the same models score 8--16/20 on Machine against the plain model's 13 (8 vs 13, $p=.21$;
+16 vs 13, $p=.48$); model-written rules give 6/20 ($p=.056$). On Lock, CodeBreak with letters, all conditions stay at
+0--4/20. In people near transfer is the common kind and far transfer the rare one \citep{barnett2002}; for this
+model the unit that learning attaches to is the wording, not the skill.
+
 \section{People versus LLMs}
 \begin{table}[h]
 \centering\small
@@ -280,6 +293,7 @@ Expertise reversal & guidance helps novices, hurts experts & 4$\to$11/20 weak ta
 Pressure (Yerkes--Dodson) & harms hard tasks & 16$\to$7/20 & same outcome, other cause \\
 Encouragement, mind-set & small effects at scale & none & same \\
 Far transfer is rare & near only & none to far problems & same \\
+Near transfer is common \citep{barnett2002} & same skill, new surface transfers & plain: 4/20 vs 13/20 on identical problems renamed; trained gains do not cross the rename & different \\
 Variability of practice & varied practice transfers better & better tool use, not more solved & partly \\
 Given a free check & learners use it & rarely used & different \\
 Imitating narrated checks & --- & learns the claim, not the check & different \\
@@ -296,7 +310,7 @@ Self-generated rules & knowing a rule $\neq$ using it & model-written rules as p
 One model family at one size; 20 problems per task detects only large effects (about $\pm35$ points per task);
 greedy decoding makes any prompt change a perturbation, which is why guidance is compared with light-touch
 controls. Expertise reversal, pressure and self-explanation were found after looking at the data and are being
-re-tested on fresh seeds; near-transfer baselines on Lock and Machine are running. Next: learning from erroneous
+re-tested on fresh seeds. Next: learning from erroneous
 examples, interleaved versus blocked practice, combining self-explanation with on-policy practice, and a second
 model family.
 
