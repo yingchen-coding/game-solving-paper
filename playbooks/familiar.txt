@@ -1,0 +1,4 @@
+Before your first action on any task, ask: which problem that I already know how to solve is this the same as,
+once the names are changed? Write one line mapping the new names onto the familiar ones (for example: "this
+machine is a hidden function; INPUT means query; SUBMIT means answer"). Then solve it the way you solve the
+familiar problem, but always act with this task's own action words.

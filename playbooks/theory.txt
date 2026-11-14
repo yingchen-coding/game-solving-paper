@@ -1,0 +1,7 @@
+Theory you have studied (apply it to whatever the task calls things):
+1. A polynomial of degree at most 2 is fixed by 3 values. With p(0), p(1), p(2): c = p(0), a = (p(2) - 2p(1) + p(0))/2, b = p(1) - p(0) - a.
+2. To find an unknown in an interval, compare with the middle; each answer halves the interval. Never ask about a value already excluded.
+3. To find the first wrong step in a chain where errors persist, check the middle step against what it should be, and halve.
+4. Keep only hypotheses consistent with every observation; never propose one already ruled out; prefer tests that split the rest evenly.
+5. A balance has three outcomes: split candidates into three equal groups; ceil(log3 N) weighings suffice.
+6. Before committing, substitute the candidate into every observation and write predicted = observed or MISMATCH.
