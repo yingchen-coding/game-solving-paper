@@ -375,9 +375,18 @@ Inert ideas \citep{whitehead1929} & stated theory is not applied & theorems in p
 One model family at one size; 20 problems per task detects only large effects (about $\pm35$ points per task);
 greedy decoding makes any prompt change a perturbation, which is why guidance is compared with light-touch
 controls. Expertise reversal, pressure and self-explanation were found after looking at the data and are being
-re-tested on fresh seeds. Next: learning from erroneous
-examples, interleaved versus blocked practice, combining self-explanation with on-policy practice, and a second
-model family.
+re-tested on fresh seeds. The varied-wording test was designed, with its repeated-data control, before either was
+run. The textbook conditions were not planned in advance: each layer (application problems, then signed arithmetic)
+was built from a step-by-step breakdown of the previous layer's failures, so they are a sequence of diagnoses, not
+independent tests. One layer is void: the signed-arithmetic adapter diverged in training (training loss 0.13 rose to
+0.94) and its replies degenerated, so it is being retrained at half the learning rate and is not reported.
+
+The breakdown-then-retrain loop looks like recursive self-improvement only in form. The diagnosis and each new
+curriculum come from outside the model, the verifiers and goals are fixed, and nothing compounds: a better student
+does not make the next diagnosis better. The direct test is to hand both steps to the model, letting it read its
+own failed episodes and write its own varied wordings, filtered by the verifier, and compare with the varied wordings
+written for it. Next, besides that: a second skill for the varied-wording result (OddCoin, tested on a renamed twin,
+is running), learning from erroneous examples, interleaved versus blocked practice, and a second model family.
 
 \section{Related work}
 Expert iteration and self-taught reasoning fine-tune on a model's own verified successes

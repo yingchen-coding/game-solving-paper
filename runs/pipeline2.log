@@ -61,3 +61,4 @@
 [2026-11-15 11:00:15] near_theory_arith_lenient
 [2026-11-15 12:27:30] dup_hm
 [2026-11-15 12:38:22] train adapters/q7_theory_arith_lr1 (lr 1e-5)
+[2026-11-15 12:47:53] stick_theory_arith_lr1
