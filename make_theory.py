@@ -14,6 +14,7 @@ evaluation is an application problem the model has never seen.
 Every exercise answer is computed, and every worked solution is checked against it before it is written.
 
     python make_theory.py --out data/q7_theory          # training data (lessons + exercises)
+    python make_theory.py --out data/q7_theory_act --act  # same, exercises answered as Thought/Action
     python make_theory.py --summary playbooks/theory.txt  # the theorems only, for the prompt-only condition
 """
 import argparse
@@ -124,7 +125,7 @@ def ex_poly(rng):
                   f"a = (d2 - d1)/({x2} - {x0}) = {A}.", f"b = d1 - a*({x0} + {x1}) = {B}.",
                   f"c = {y0} - a*{x0}^2 - b*{x0} = {C}."]
     steps.append("Check: " + "; ".join(f"p({x}) = {p(x)} = {y}" for x, y in zip(xs, ys)) + ".")
-    return q, " ".join(steps) + f" Answer: p(x) = {poly_str(a, b, c)}."
+    return q, " ".join(steps) + f" Answer: p(x) = {poly_str(a, b, c)}.", f"p(x) = {poly_str(a, b, c)}"
 
 
 def ex_points(rng):
@@ -134,7 +135,7 @@ def ex_points(rng):
     q = f"p has degree at most 2. You know only {facts}. Is p determined? If not, how many more values do you need?"
     need = 3 - k
     return q, (f"No. Theorem 1.1: degree at most 2 needs 3 values and only {k} {'is' if k == 1 else 'are'} known, so "
-               f"many polynomials fit. {need} more value{'s' if need > 1 else ''} at new points will determine it.")
+               f"many polynomials fit. {need} more value{'s' if need > 1 else ''} at new points will determine it."), f"{need} more"
 
 
 def ex_halving(rng):
@@ -157,13 +158,13 @@ def ex_halving(rng):
     ans = (f"Apply each result: {'; '.join(history) or 'nothing yet'}. The unknown is in [{a}, {b}] "
            f"({b - a + 1} integers). Compare with the middle, floor(({a} + {b})/2) = {m} (Theorem 2.1). "
            f"At most {math.ceil(math.log2(b - a + 2))} more comparisons are needed.")
-    return q, ans
+    return q, ans, f"[{a}, {b}], compare with {m}"
 
 
 def ex_count(rng):
     n = rng.choice([7, 10, 15, 31, 60, 100, 1000])
     return (f"How many comparisons guarantee finding an integer among {n} possibilities by halving?",
-            f"ceil(log2({n} + 1)) = {math.ceil(math.log2(n + 1))} (Theorem 2.1).")
+            f"ceil(log2({n} + 1)) = {math.ceil(math.log2(n + 1))} (Theorem 2.1).", str(math.ceil(math.log2(n + 1))))
 
 
 def ex_firstdiff(rng):
@@ -182,9 +183,9 @@ def ex_firstdiff(rng):
     q = (f"A computation has steps 1..{n}; exactly one step is wrong and every value after it is wrong. Checks so "
          f"far: {'; '.join(log)}. Where can the wrong step be, and which step should you check next?")
     if lo == hi:
-        return q, f"The wrong step is in [{lo}, {hi}], so it is step {lo}; no more checks are needed."
+        return q, f"The wrong step is in [{lo}, {hi}], so it is step {lo}; no more checks are needed.", f"step {lo}"
     return q, (f"A correct value after step m clears steps 1..m; a wrong value means the wrong step is m or earlier. "
-               f"The wrong step is in [{lo}, {hi}]. Check the value after the middle step {nxt} (Chapter 2).")
+               f"The wrong step is in [{lo}, {hi}]. Check the value after the middle step {nxt} (Chapter 2)."), f"check step {nxt}"
 
 
 def score(guess, secret):
@@ -212,7 +213,7 @@ def ex_elim(rng):
            f"{', '.join(fmt(h) for h in left)} ({len(left)} of {len(space)}).")
     if ruled:
         ans += f" Do not guess {fmt(ruled)}: an observation already rules it out."
-    return q, ans
+    return q, ans, ", ".join(fmt(h) for h in left)
 
 
 def ex_balance(rng):
@@ -227,7 +228,8 @@ def ex_balance(rng):
          f"{right[0]}-{right[-1]}: {res}. Which coins are still candidates, and how many weighings are needed "
          f"from the start in the worst case?")
     return q, (f"{res.capitalize()}: the heavy coin is among {rest[0]}-{rest[-1]} ({len(rest)} coins). "
-               f"Worst case from the start: ceil(log3 {n}) = {math.ceil(math.log(n, 3) - 1e-9)} weighings (Theorem 4.1).")
+               f"Worst case from the start: ceil(log3 {n}) = {math.ceil(math.log(n, 3) - 1e-9)} weighings (Theorem 4.1)."), \
+        f"{rest[0]}-{rest[-1]}, {math.ceil(math.log(n, 3) - 1e-9)} weighings"
 
 
 def ex_verify(rng):
@@ -244,15 +246,21 @@ def ex_verify(rng):
     q = (f"Observations: {', '.join(f'p({x}) = {y}' for x, y in obs)}. Candidate: p(x) = {poly_str(*cand)}. "
          "Should you commit to it?")
     return q, ("Substitute into every observation (Theorem 5.1): " + "; ".join(lines) + ". "
-               + ("No mismatch and three values determine it: commit." if ok else "There is a MISMATCH: reject it."))
+               + ("No mismatch and three values determine it: commit." if ok else "There is a MISMATCH: reject it.")), \
+        "commit" if ok else "reject"
 
 
 EXERCISES = {1: [ex_poly, ex_points], 2: [ex_halving, ex_count, ex_firstdiff], 3: [ex_elim], 4: [ex_balance],
              5: [ex_verify]}
 SYSTEM = "You are a careful student. Solve the exercise step by step, using the theory you have learned."
+# Agent format, copied from frozen/agents.py SYSTEM["plain"]: the Q&A textbook (data/q7_theory) taught the model to drop
+# its 'Action:' line, so every game move came out invalid; this variant answers each exercise in the format it is tested in.
+# STATE because ANSWER is a game verb (HiddenRule, OddCoin, Circuit) and the games must stay unseen.
+AGENT_SYSTEM = ("You are an agent solving a problem in a text environment. Each turn, think briefly, then give "
+                "exactly one action on a final line that starts with 'Action:'.")
 
 
-def rows(per_chapter: int, lesson_reps: int, seed: int) -> list[dict]:
+def rows(per_chapter: int, lesson_reps: int, seed: int, act: bool = False) -> list[dict]:
     rng = random.Random(seed)
     out = []
     for ch, text in LESSONS.items():
@@ -261,9 +269,11 @@ def rows(per_chapter: int, lesson_reps: int, seed: int) -> list[dict]:
                                      {"role": "user", "content": f"Teach me Chapter {ch}."},
                                      {"role": "assistant", "content": text}]})
         for i in range(per_chapter):
-            q, a = EXERCISES[ch][i % len(EXERCISES[ch])](rng)
-            out.append({"messages": [{"role": "system", "content": SYSTEM}, {"role": "user", "content": q},
-                                     {"role": "assistant", "content": a}]})
+            q, a, final = EXERCISES[ch][i % len(EXERCISES[ch])](rng)
+            if act:
+                q, a = f"{q}\n\nActions: STATE your answer.", f"Thought:{a}\nAction: STATE {final}"
+            out.append({"messages": [{"role": "system", "content": AGENT_SYSTEM if act else SYSTEM},
+                                     {"role": "user", "content": q}, {"role": "assistant", "content": a}]})
     rng.shuffle(out)
     return out
 
@@ -274,12 +284,13 @@ def main() -> None:
     ap.add_argument("--summary", type=Path)
     ap.add_argument("--per-chapter", type=int, default=100)
     ap.add_argument("--lesson-reps", type=int, default=10)
+    ap.add_argument("--act", action="store_true", help="answer exercises in the agent's Thought/Action format")
     args = ap.parse_args()
     if args.summary:
         args.summary.write_text(SUMMARY + "\n")
     if args.out:
-        data = rows(args.per_chapter, args.lesson_reps, seed=0)
-        valid = rows(6, 1, seed=1)
+        data = rows(args.per_chapter, args.lesson_reps, seed=0, act=args.act)
+        valid = rows(6, 1, seed=1, act=args.act)
         args.out.mkdir(parents=True, exist_ok=True)
         (args.out / "train.jsonl").write_text("".join(json.dumps(r) + "\n" for r in data))
         (args.out / "valid.jsonl").write_text("".join(json.dumps(r) + "\n" for r in valid))
