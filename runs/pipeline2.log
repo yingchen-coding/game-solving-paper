@@ -48,3 +48,5 @@
 [2026-11-14 17:36:43] stick_theory_act
 [2026-11-14 19:58:22] near_theory_act
 [2026-11-14 20:47:08] train adapters/q7_distill_dup
+[2026-11-14 21:21:28] near_theory_act_lenient
+[2026-11-14 22:04:59] near_plain_lenient

@@ -138,6 +138,7 @@ On-policy distillation + tool$^\dagger$ & 16 & 1 & 17 & 14 & 2 & 0 & 48/80 & 2/4
 Model-written operational rules$^\dagger$ & 20 & 1 & 9 & 13 & 1 & 1 & 43/80 & 2/40 \\
 Distillation + operational rules$^\dagger$ & 19 & 0 & 10 & 8 & 2 & 1 & 37/80 & 3/40 \\
 Theorem summary prompt & 20 & 0 & 5 & 16 & 2 & 0 & 41/80 & 2/40 \\
+Fine-tune on the textbook & 20 & 2 & 2 & 8 & 1 & 0 & 32/80 & 1/40 \\
 \bottomrule
 \end{tabular}}
 \caption{Problems solved out of 20 per task. ``Check habit'' conditions are fine-tuned on expert play that calls
@@ -192,7 +193,7 @@ the cause cannot be anxiety.
 \paragraph{Far transfer is rare \citep{thorndike1901,barnett2002}.} Every method that improves the practised games
 leaves the never-practised problems at or below the plain model.
 
-\subsection{What does not carry over: the check becomes a ritual}
+\subsection{What does not carry over: the check becomes a ritual}\label{sec:ritual}
 An untrained model given the free verifier rarely uses it (Circuit: 2 CHECK calls in 99 actions) and solves fewer
 problems (34/80 vs 40/80 practised). We therefore fine-tuned on expert play that calls CHECK on its candidate before
 every committing move, on the four practice games, and, to test variability of practice \citep{schmidt1975}, on
@@ -306,8 +307,20 @@ skips the elimination and states coefficients (``solving these, I get $a=-1$, $b
 1 of those 10 is right, against 8 of 12 when the model eliminates step by step without the summary.
 Whitehead warned against ``inert ideas'', ideas ``merely received into the mind without being utilised, or tested,
 or thrown into fresh combinations'' \citep{whitehead1929}. Here the received theorem is worse than inert: citing it
-replaces the working the model would otherwise have done. Training on the textbook's 500 worked exercises, the second
-half of the school recipe, is running.
+replaces the working the model would otherwise have done.
+
+The second half of the school recipe is practice. Fine-tuning on the textbook's five lessons (each repeated 10 times) and 500 worked
+exercises, written as plain answers, removed the action line from game replies: every HiddenRule and OddCoin move
+was invalid. Rewritten so each exercise is answered in the agent's \texttt{Thought:}/\texttt{Action:} format with a
+verb no game uses, the textbook leaves the moves valid but still does not help (Table~\ref{tab:main}): OddCoin falls
+from 16 to 8/20 ($p=.023$), HiddenRule is 2/20, and the never-practised problems are 1/40. The model applies the theorem
+where it is a choice and not where it is a computation. On HiddenRule it requests $f(0)$, $f(1)$, $f(2)$ in all 20
+episodes, as Theorem~1.1 prescribes, and reaches an answer in 17, but only 2 are right; it practised exactly this
+computation 50 times with the function named $p$. It cites ``Theorem 1.x'' 203 times; 86 of those name theorems
+1.2--1.5, which the textbook does not contain, and it never cites the balance theorem on OddCoin. On Machine its moves
+put the action mid-line; read with a lenient parser it solves 4/20, against 13/20 for the plain model. Contradictions
+of its own evidence do not fall (HiddenRule 15 and 15, Circuit 13 and 13), though Chapters~3 and~5 teach exactly
+that rule. As with the narrated checks of Section~\ref{sec:ritual}, what transfers is the citation, not the method.
 
 \section{People versus LLMs}
 \begin{table}[h]
@@ -328,7 +341,7 @@ Imitating narrated checks & --- & learns the claim, not the check & different \\
 Analogical comparison \citep{gentner2003} & comparing cases transfers better than rules & worse than rules (3 vs 11/20 weak task) & different \\
 Self-explanation \citep{chi1989} & own explanations transfer better & 4$\to$12/20 weak task, 50/80 practised; its gains on unpractised problems come from the tool & partly (practised only) \\
 Self-generated rules & knowing a rule $\neq$ using it & model-written rules as prompt: 4$\to$9/20, n.s. & same \\
-Inert ideas \citep{whitehead1929} & stated theory is not applied & theorems in prompt: games unchanged; renamed task 13$\to$1/20 & same, stronger \\
+Inert ideas \citep{whitehead1929} & stated theory is not applied & theorems in prompt: renamed task 13$\to$1/20; textbook fine-tune: right inputs, wrong coefficients (2/20), invented theorem numbers & same, stronger \\
 \bottomrule
 \end{tabular}}
 \caption{Each row is one classic finding, operationalised the same way on the model.}
