@@ -139,6 +139,7 @@ Model-written operational rules$^\dagger$ & 20 & 1 & 9 & 13 & 1 & 1 & 43/80 & 2/
 Distillation + operational rules$^\dagger$ & 19 & 0 & 10 & 8 & 2 & 1 & 37/80 & 3/40 \\
 Theorem summary prompt & 20 & 0 & 5 & 16 & 2 & 0 & 41/80 & 2/40 \\
 Fine-tune on the textbook & 20 & 2 & 2 & 8 & 1 & 0 & 32/80 & 1/40 \\
+Textbook + application problems & 16 & 0 & 1 & 11 & 1 & 0 & 28/80 & 1/40 \\
 \bottomrule
 \end{tabular}}
 \caption{Problems solved out of 20 per task. ``Check habit'' conditions are fine-tuned on expert play that calls
@@ -321,6 +322,17 @@ computation 50 times with the function named $p$. It cites ``Theorem 1.x'' 203 t
 put the action mid-line; read with a lenient parser it solves 4/20, against 13/20 for the plain model under the same parser ($p=.010$). Contradictions
 of its own evidence do not fall (HiddenRule 15 and 15, Circuit 13 and 13), though Chapters~3 and~5 teach exactly
 that rule. As with the narrated checks of Section~\ref{sec:ritual}, what transfers is the citation, not the method.
+
+Schools put word problems between the theorem and the exam, so we added that layer, still with no game words: a
+chapter on renaming (``h plays the role of $p$''), and 420 application problems with renamed functions, readings
+given one per line, balance plans that name both pans, and code proposals checked against every attempt. It fixes
+what it targets. OddCoin's half-written moves fall from 20 to 2, Machine's formatting failures disappear, and every
+episode now names a chapter of the textbook. On Machine the model collects three distinct readings in 19 of 20 episodes. It still solves
+4/20 Machine and 1/20 HiddenRule (Table~\ref{tab:main}). The remaining failure is arithmetic. In 8 of the 13
+HiddenRule replies that write the coefficient formula, $a$ is wrong, and each error sits at a double negative
+(``$(-15 - -12 + 3)/2 = -6/2$''); $c$ is never wrong and $b$ is wrong only when $a$ is. The worked solutions in
+both layers wrote exactly that form. A chapter on signed arithmetic, with drills and every worked solution
+rewritten one term at a time, is running.
 
 \section{People versus LLMs}
 \begin{table}[h]
