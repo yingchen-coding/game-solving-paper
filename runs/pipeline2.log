@@ -56,3 +56,7 @@
 [2026-11-15 03:05:54] near_theory_app
 [2026-11-15 03:43:50] near_theory_app_lenient
 [2026-11-15 04:10:39] vary_hm
+[2026-11-15 05:12:00] train adapters/q7_theory_arith
+[2026-11-15 05:40:18] stick_theory_arith
+[2026-11-15 11:00:15] near_theory_arith_lenient
+[2026-11-15 12:27:30] dup_hm
