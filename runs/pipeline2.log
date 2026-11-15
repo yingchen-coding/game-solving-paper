@@ -50,3 +50,5 @@
 [2026-11-14 20:47:08] train adapters/q7_distill_dup
 [2026-11-14 21:21:28] near_theory_act_lenient
 [2026-11-14 22:04:59] near_plain_lenient
+[2026-11-14 22:43:45] near_plain_lenient
+[2026-11-14 22:45:19] train adapters/q7_theory_app
