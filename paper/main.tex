@@ -33,7 +33,8 @@ calls the verifier before every answer, it learns the habit---on never-practised
 0\% to 88\%), yet solves no more problems and writes ``all observations agree'' for answers it never checked.
 Comparing two solved cases, which helps people transfer, does worse than stating the rules. Near transfer, the
 easy kind for people, fails: the plain model solves 4/20 black-box problems and 13/20 of the identical problems
-renamed, and training gains on the first do not reach the second. Stating the underlying theorems in the prompt
+renamed, and training gains on the first do not reach the second---unless the training data states the same
+problems in several wordings: then the renamed problem is solved 20/20, against 6/20 for the same data repeated. Stating the underlying theorems in the prompt
 (three values fix a quadratic, with the formula) leaves the practised games unchanged and drops the renamed problem
 from 13/20 to 1/20: the model announces that it is using the theory and stops doing the arithmetic. What works is
 self-explanation: with the same states and expert moves, training on reasoning the model wrote itself instead of
@@ -293,6 +294,16 @@ acts in 96 of 114 replies. It learned to explain, and the step from explaining t
 practised. In people near transfer is the common kind and far transfer the rare one \citep{barnett2002}; for this
 model the unit that learning attaches to is the wording, not the skill.
 
+If learning attaches to the wording, the remedy is to vary it. We added four copies of every HiddenRule example
+to the distillation data, each with the function, variable, verbs and the name of the box redrawn from pools
+that exclude Machine's ($h$, $r$, $q$, \ldots; $t$, $k$, $m$, \ldots; \texttt{PROBE}, \texttt{TEST}, \ldots;
+\texttt{REPORT}, \texttt{DECLARE}, \ldots), so Machine stays a wording never trained on. The control adds the
+same four copies verbatim. With varied wordings the model solves 20/20 Machine problems; with the repeated copies,
+6/20 (14 problems solved only after varied training, none only after repeated; exact $p=.0001$), and distillation
+alone gives 8/20. HiddenRule itself is 16/20 versus 12/20 ($p=.30$). The amount of data is the same; the gain on
+the unseen wording comes from the variety. This is the first condition whose training gain crosses a rename.
+Whether it extends to a second skill (OddCoin, tested on a renamed twin) is running.
+
 \subsection{Teaching the theory: stated theorems become inert}
 Schools teach the theorem first and the word problems after. We wrote a five-chapter textbook in abstract
 mathematical language with no game words: a quadratic is fixed by three values ($c=p(0)$,
@@ -346,8 +357,8 @@ Expertise reversal & guidance helps novices, hurts experts & 4$\to$11/20 weak ta
 Pressure (Yerkes--Dodson) & harms hard tasks & 16$\to$7/20 & same outcome, other cause \\
 Encouragement, mind-set & small effects at scale & none & same \\
 Far transfer is rare & near only & none to far problems & same \\
-Near transfer is common \citep{barnett2002} & same skill, new surface transfers & plain: 4/20 vs 13/20 on identical problems renamed; trained gains do not cross the rename & different \\
-Variability of practice & varied practice transfers better & better tool use, not more solved & partly \\
+Near transfer is common \citep{barnett2002} & same skill, new surface transfers & plain: 4/20 vs 13/20 on identical problems renamed; trained gains do not cross the rename unless the training varies the wording (20/20 vs 6/20) & different \\
+Variability of practice \citep{schmidt1975} & varied practice transfers better & varied games: better tool use, not more solved; varied wordings of one task: renamed task 6$\to$20/20 & same (wording) \\
 Given a free check & learners use it & rarely used & different \\
 Imitating narrated checks & --- & learns the claim, not the check & different \\
 Analogical comparison \citep{gentner2003} & comparing cases transfers better than rules & worse than rules (3 vs 11/20 weak task) & different \\
