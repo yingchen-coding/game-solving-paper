@@ -43,3 +43,8 @@
 [2026-11-14 14:32:32] near_theory_prompt
 [2026-11-14 14:46:19] train adapters/q7_theory
 [2026-11-14 14:52:49] stick_theory
+[2026-11-14 17:11:02] stick_theory
+[2026-11-14 17:17:54] train adapters/q7_theory_act
+[2026-11-14 17:36:43] stick_theory_act
+[2026-11-14 19:58:22] near_theory_act
+[2026-11-14 20:47:08] train adapters/q7_distill_dup
