@@ -322,6 +322,15 @@ looking: the model whose HiddenRule data alone was varied, with OddCoin's data e
 solves 19/20 Parcels against 12/20 for distillation ($p=.020$), more than the model whose OddCoin data was also
 varied (15/20). It is being re-tested on 40 fresh seeds.
 
+Every condition so far is supervised. Outcome-reward reinforcement learning, the recipe behind DeepSeek-R1, is
+reported to generalise to rule and surface variants where supervised fine-tuning memorises \citep{chu2025}. We ran
+a group-relative policy gradient on HiddenRule and OddCoin in their original wording: four sampled episodes per
+practice seed, reward 1 when the verifier accepts, advantage relative to the group, 60 iterations, LoRA as before.
+It improves the practised games (HiddenRule 4 to 10/20, $p=.070$; OddCoin 16 to 18) and not their renamed twins
+(Machine 13 to 10, Parcels 9 to 10). At this scale reinforcement learning also stays with the wording; it harms
+Machine less than distillation does (10 against 8). The same algorithm with the wording redrawn on every practice
+seed is running.
+
 \subsection{Teaching the theory: stated theorems become inert}
 Schools teach the theorem first and the word problems after. We wrote a five-chapter textbook in abstract
 mathematical language with no game words: a quadratic is fixed by three values ($c=p(0)$,
@@ -379,6 +388,7 @@ Pressure (Yerkes--Dodson) & harms hard tasks & 16$\to$7/20 & same outcome, other
 Encouragement, mind-set & small effects at scale & none & same \\
 Far transfer is rare & near only & none to far problems & same \\
 Near transfer is common \citep{barnett2002} & same skill, new surface transfers & plain: 4/20 vs 13/20 on identical problems renamed; trained gains do not cross the rename unless the training varies the wording (20/20 vs 6/20) & different \\
+RL generalises, SFT memorises \citep{chu2025} & (a result on models) & policy gradient: practised 4$\to$10/20; renamed 13$\to$10, 9$\to$10 & different (at this scale) \\
 Variability of practice \citep{schmidt1975} & varied practice transfers better & varied games: better tool use, not more solved; varied wordings of one task: renamed task 6$\to$20/20 & same (wording) \\
 Given a free check & learners use it & rarely used & different \\
 Imitating narrated checks & --- & learns the claim, not the check & different \\

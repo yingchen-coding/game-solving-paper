@@ -33,6 +33,7 @@ from mlx_lm.utils import save_config
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "frozen"))
 import agents  # noqa: E402
 import envs  # noqa: E402
+import twin_envs  # noqa: E402,F401  (registers the randomised-wording practice games)
 from train_lora import SafeClippedAdamW  # noqa: E402
 
 
