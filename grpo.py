@@ -12,6 +12,11 @@ the group mean, divided by the group std). Groups where every episode scores the
 skipped. No KL term: the LoRA rank and learning rate are small and the run is short. Seeds 1000+ are used; evaluation
 uses 10000+.
 
+With the wording redrawn per seed (randhiddenrule, randoddcoin) the outcome-only reward let the reply format drift:
+invalid moves in training rose 19 -> 56 -> 212 per 20 iterations and evaluation replies wrote 'Action: ACTION QUERY 0'
+or put the action mid-line. --format-penalty adds R1's second reward term: a reply the parser rejects costs reward,
+so all-fail groups that differ in format still carry a gradient.
+
     python grpo.py --envs hiddenrule,oddcoin --iters 60 --group 4 --out adapters/q7_grpo
 """
 import argparse
@@ -85,6 +90,8 @@ def main():
     ap.add_argument("--rank", type=int, default=8)
     ap.add_argument("--max-tokens", type=int, default=256)
     ap.add_argument("--seed0", type=int, default=1000)
+    ap.add_argument("--format-penalty", type=float, default=0.0,
+                    help="subtract this times the share of invalid moves from the reward (DeepSeek-R1's format reward)")
     ap.add_argument("--out", type=Path, required=True)
     a = ap.parse_args()
     assert a.seed0 + a.iters < 10_000, "practice seeds must stay below the evaluation seeds"
@@ -108,7 +115,7 @@ def main():
         name, seed = names[it % len(names)], a.seed0 + it
         pol = policy_for(model, tok, a.temp, a.max_tokens)
         eps = [agents.run_episode(envs.ALL[name](seed), pol) for _ in range(a.group)]
-        r = [float(e["success"]) for e in eps]
+        r = [float(e["success"]) - a.format_penalty * e["invalid"] / max(e["steps"], 1) for e in eps]
         for k, e in enumerate(eps):
             played.write(json.dumps({**e, "seed": seed, "attempt": k, "iter": it}) + "\n")
         played.flush()

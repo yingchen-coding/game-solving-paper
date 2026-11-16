@@ -337,8 +337,12 @@ a group-relative policy gradient on HiddenRule and OddCoin in their original wor
 practice seed, reward 1 when the verifier accepts, advantage relative to the group, 60 iterations, LoRA as before.
 It improves the practised games (HiddenRule 4 to 10/20, $p=.070$; OddCoin 16 to 18) and not their renamed twins
 (Machine 13 to 10, Parcels 9 to 10). At this scale reinforcement learning also stays with the wording; it harms
-Machine less than distillation does (10 against 8). The same algorithm with the wording redrawn on every practice
-seed is running.
+Machine less than distillation does (10 against 8). With the wording redrawn on every practice seed, the recipe that
+made supervised training cross the rename, reinforcement learning gets worse everywhere (HiddenRule 0/20, OddCoin
+14, Machine 12, Parcels 6). The skill is not what broke: invalid moves rise from 2 to 198 across the 80 games (against GRPO on the original wording),
+nearly all of them a well-formed move behind a doubled or misplaced label (\texttt{Action: ACTION QUERY 0}), and in
+training they grow from 19 to 212 per 20 iterations. An outcome-only reward does not protect the format; DeepSeek-R1
+adds a format reward for this reason, and that variant is running.
 
 \subsection{Teaching the theory: stated theorems become inert}
 Schools teach the theorem first and the word problems after. We wrote a five-chapter textbook in abstract
