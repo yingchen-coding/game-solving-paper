@@ -100,6 +100,7 @@ def main():
     grad_fn = nn.value_and_grad(model, episode_loss)
     names = a.envs.split(",")
     log = (a.out / "grpo_log.jsonl").open("a")
+    played = (a.out / "episodes.jsonl").open("a")  # every sampled episode, for the rejection-sampling comparison
 
     for it in range(a.iters):
         t0 = time.time()
@@ -107,6 +108,9 @@ def main():
         pol = policy_for(model, tok, a.temp, a.max_tokens)
         eps = [agents.run_episode(envs.ALL[name](seed), pol) for _ in range(a.group)]
         r = [float(e["success"]) for e in eps]
+        for k, e in enumerate(eps):
+            played.write(json.dumps({**e, "seed": seed, "attempt": k, "iter": it}) + "\n")
+        played.flush()
         mean = sum(r) / len(r)
         std = math.sqrt(sum((x - mean) ** 2 for x in r) / len(r))
         row = {"iter": it, "env": name, "seed": seed, "rewards": r, "updated": std > 0}
