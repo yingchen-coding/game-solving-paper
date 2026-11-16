@@ -123,5 +123,25 @@ class RandOddCoin(envs.OddCoin):
         return out.replace(" vs ", f" {self.w['sep']} ")
 
 
-for _cls in (Parcels, RandHiddenRule, RandOddCoin):
+class Parcels21(Parcels):
+    """Every Parcels puzzle exactly once: seed % 21 picks (n, heavy) from the 9 + 12 possible puzzles.
+
+    OddCoin draws n from {9, 12} and the heavy item uniformly, so there are only 21 puzzles. Seeds 10000-10019 hold
+    13 distinct ones and 10020-10059 hold 19; greedy decoding replays a repeated puzzle identically, so counting
+    seeds double-counts. 21 consecutive seeds of this game cover the whole population once.
+    """
+    name = "parcels21"
+
+    def __init__(self, seed: int):
+        self.idx = seed % 21
+        super().__init__(seed)
+
+    def setup(self):
+        idx = self.idx
+        self.n, self.heavy = (9, idx + 1) if idx < 9 else (12, idx - 8)
+        self.answer = None
+        self.cands = set(range(1, self.n + 1))
+
+
+for _cls in (Parcels, RandHiddenRule, RandOddCoin, Parcels21):
     envs.ALL[_cls.name] = _cls

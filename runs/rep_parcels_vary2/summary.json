@@ -1,0 +1,19 @@
+{
+ "policy": "mlx:mlx-community/Qwen2.5-7B-Instruct-4bit",
+ "adapter": "adapters/q7_distill_vary2",
+ "system": "plain",
+ "playbook": null,
+ "teacher": null,
+ "ledger": false,
+ "check_tool": false,
+ "by_env": {
+  "parcels": {
+   "n": 40,
+   "success": 0.675,
+   "asked": 0.0,
+   "invalid_per_step": 0.0,
+   "steps": 3.85,
+   "repeat_rate": 0.0
+  }
+ }
+}

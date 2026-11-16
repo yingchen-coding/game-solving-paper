@@ -35,7 +35,7 @@ Comparing two solved cases, which helps people transfer, does worse than stating
 easy kind for people, fails: the plain model solves 4/20 black-box problems and 13/20 of the identical problems
 renamed, and training gains on the first do not reach the second---unless the training data states the same
 problems in several wordings: then the renamed problem is solved 20/20, against 6/20 for the same data repeated
-(on a second skill, whose training already transfers, variation adds nothing). Stating the underlying theorems in the prompt
+(on a second skill, with only 21 possible puzzles, no effect is detectable). Stating the underlying theorems in the prompt
 (three values fix a quadratic, with the formula) leaves the practised games unchanged and drops the renamed problem
 from 13/20 to 1/20: the model announces that it is using the theory and stops doing the arithmetic. What works is
 self-explanation: with the same states and expert moves, training on reasoning the model wrote itself instead of
@@ -87,7 +87,9 @@ Far transfer & Circuit & find the faulty stage of an 8-stage pipeline & 5 \\
 
 \paragraph{Model and decoding.} Qwen2.5-7B-Instruct, 4-bit, MLX \citep{qwen2024}; greedy decoding; at most 256
 tokens per turn. Fine-tuning uses LoRA \citep{hu2022} on 8 layers, 200 iterations, learning rate $2\times10^{-5}$,
-with gradient clipping. Each condition plays 20 problems per task.
+with gradient clipping. Each condition plays 20 problems per task. Seeds are not always distinct problems: OddCoin and its twin
+have 21 possible puzzles, so 20 seeds hold 13 distinct ones and a deterministic model repeats its episode on each
+repeat; HiddenRule, Machine and Lock repeat 2--3 puzzles in 20. Tests on those games count distinct puzzles.
 
 \paragraph{Conditions.} Prompts (a strategy prompt, a playbook the model writes from its own attempts in the
 style of \citet{shinn2023}, a playbook of expert rules), teachers that add one line after every turn (encourage,
@@ -281,7 +283,7 @@ never reach the action line, which the evaluator scores as an invalid move (52\%
 so its contradiction counts there are deflated; the tool comparison above uses the distilled model and is unaffected.
 These decompositions were made after seeing the data and are being re-tested on fresh seeds.
 
-\subsection{Near transfer: the gain stays with the wording}
+\subsection{Near transfer: the gain stays with the wording}\label{sec:near}
 Machine is HiddenRule with new words: it subclasses the same environment, the same seed yields the same hidden
 polynomial (seed 10003 gives $x^2+14$ in both) with the same budget and the same stated information, and only
 $f$, $x$, \texttt{QUERY}, \texttt{ANSWER} become $g$, $n$, \texttt{INPUT}, \texttt{SUBMIT}. The plain model solves
@@ -313,14 +315,21 @@ model from 13 to 4/20 (11 lost, 1 gained; $p=.012$), like the theorem summary be
 
 The effect does not replicate on a second skill, and the reason is informative. We built Parcels, a renamed twin of
 OddCoin (parcels, \texttt{SCALE} with ``/'' between the pans, \texttt{CLAIM}; same seed, same puzzle), and varied
-OddCoin's wording the same way. Repeating OddCoin's data already lifts Parcels from 9/20 (plain) to 14/20, and
-varied wordings give 15/20 ($p=1.0$), though they cut contradicting moves from 7 to 2. OddCoin's skill crosses its
-rename without help; HiddenRule's does not, and there supervised training pushes the renamed task below the plain
-model (13 to 8 and 6/20) before variation lifts it to 20. Varied wording repairs the damage SFT does to a new
-surface; where SFT does none, it adds nothing measurable. One result points the other way and was found after
-looking: the model whose HiddenRule data alone was varied, with OddCoin's data exactly as in plain distillation,
-solves 19/20 Parcels against 12/20 for distillation ($p=.020$), more than the model whose OddCoin data was also
-varied (15/20). It is being re-tested on 40 fresh seeds.
+OddCoin's wording the same way. Repeating OddCoin's data lifts Parcels from 9/20 (plain) to 14/20, and varied
+wordings give 15/20 ($p=1.0$), though they cut contradicting moves from 7 to 2; counted as distinct puzzles (see
+below) these are 7, 9 and 10 of 13. SFT does not harm OddCoin's renamed twin, while on HiddenRule it pushes the
+renamed task below the plain model (13 to 8 and 6/20) before variation lifts it to 20. Varied wording repairs the
+damage SFT does to a new surface; where SFT does none, it adds nothing measurable, though with 21 puzzles this test
+can detect only a large effect. One result points the other way and was found after
+looking, and it does not survive a count of distinct problems. The model whose HiddenRule data alone was varied
+solved 19/20 Parcels against 12/20 for distillation ($p=.020$). But OddCoin draws 9 or 12 items and one heavy item,
+so it has only 21 puzzles: seeds 10000--10019 hold 13 distinct ones, and greedy decoding replays a repeated puzzle
+move for move, so the seed count double-counts. On 40 fresh seeds (19 distinct puzzles) the same models score 39,
+34, 27 and 27 of 40 (varied HiddenRule only, distillation, both varied, repeated), which again looks significant
+($p=.0007$ for 39 against 27) and again is mostly duplicates. Pooled over the 20 distinct puzzles the two seed sets
+cover, they solve 19, 16, 15 and 15, and the varied-HiddenRule model beats distillation on 4 puzzles and loses on 1
+($p=.38$). We withdraw the cross-skill claim. Every Parcels and OddCoin comparison is being re-run once on each of
+the 21 puzzles.
 
 Every condition so far is supervised. Outcome-reward reinforcement learning, the recipe behind DeepSeek-R1, is
 reported to generalise to rule and surface variants where supervised fine-tuning memorises \citep{chu2025}. We ran
@@ -406,7 +415,8 @@ Inert ideas \citep{whitehead1929} & stated theory is not applied & theorems in p
 One model family at one size; 20 problems per task detects only large effects (about $\pm35$ points per task);
 greedy decoding makes any prompt change a perturbation, which is why guidance is compared with light-touch
 controls. Expertise reversal, pressure and self-explanation were found after looking at the data and are being
-re-tested on fresh seeds. The varied-wording test was designed, with its repeated-data control, before either was
+re-tested on fresh seeds. One preliminary result, a cross-skill gain on Parcels, was an artefact of repeated
+puzzles and is withdrawn (Section~\ref{sec:near}). The varied-wording test was designed, with its repeated-data control, before either was
 run. The textbook conditions were not planned in advance: each layer (application problems, then signed arithmetic)
 was built from a step-by-step breakdown of the previous layer's failures, so they are a sequence of diagnoses, not
 independent tests. One layer is void: the signed-arithmetic adapter diverged in training (training loss 0.13 rose to

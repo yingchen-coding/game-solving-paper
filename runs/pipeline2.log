@@ -79,3 +79,7 @@
 ./pipeline2z.sh: line 109: 26382 Terminated: 15          $P grpo.py --envs hiddenrule,oddcoin --iters 60 --group 4 --out "$1" > "$1.log" 2>&1
 [2026-11-16 00:51:20] twin_grpo
 [2026-11-16 02:48:16] rep_parcels_distill
+[2026-11-16 03:12:22] rep_parcels_vary
+[2026-11-16 03:42:23] rep_parcels_vary2
+[2026-11-16 03:55:42] rep_parcels_dup2
+[2026-11-16 04:27:27] grpo adapters/q7_grpo_rand
