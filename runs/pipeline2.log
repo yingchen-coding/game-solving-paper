@@ -62,3 +62,9 @@
 [2026-11-15 12:27:30] dup_hm
 [2026-11-15 12:38:22] train adapters/q7_theory_arith_lr1 (lr 1e-5)
 [2026-11-15 12:47:53] stick_theory_arith_lr1
+[2026-11-15 15:44:40] near_theory_arith_lr1_lenient
+[2026-11-15 16:29:20] twin_plain
+[2026-11-15 16:54:40] twin_distill
+[2026-11-15 17:25:27] train adapters/q7_distill_vary2
+[2026-11-15 18:05:06] twin_vary2
+[2026-11-15 18:52:57] train adapters/q7_distill_dup2

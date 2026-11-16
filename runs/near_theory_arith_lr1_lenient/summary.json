@@ -1,0 +1,27 @@
+{
+ "policy": "mlx:mlx-community/Qwen2.5-7B-Instruct-4bit",
+ "adapter": "adapters/q7_theory_arith_lr1",
+ "system": "plain",
+ "playbook": null,
+ "teacher": null,
+ "ledger": false,
+ "check_tool": false,
+ "by_env": {
+  "lock": {
+   "n": 20,
+   "success": 0.05,
+   "asked": 0.0,
+   "invalid_per_step": 0.04591836734693878,
+   "steps": 9.8,
+   "repeat_rate": 0.04081632653061224
+  },
+  "machine": {
+   "n": 20,
+   "success": 0.1,
+   "asked": 0.0,
+   "invalid_per_step": 0.15384615384615385,
+   "steps": 3.9,
+   "repeat_rate": 0.02564102564102564
+  }
+ }
+}

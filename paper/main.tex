@@ -141,6 +141,7 @@ Distillation + operational rules$^\dagger$ & 19 & 0 & 10 & 8 & 2 & 1 & 37/80 & 3
 Theorem summary prompt & 20 & 0 & 5 & 16 & 2 & 0 & 41/80 & 2/40 \\
 Fine-tune on the textbook & 20 & 2 & 2 & 8 & 1 & 0 & 32/80 & 1/40 \\
 Textbook + application problems & 16 & 0 & 1 & 11 & 1 & 0 & 28/80 & 1/40 \\
+Textbook + application + signed arithmetic & 19 & 2 & 8 & 7 & 4 & 0 & 36/80 & 4/40 \\
 \bottomrule
 \end{tabular}}
 \caption{Problems solved out of 20 per task. ``Check habit'' conditions are fine-tuned on expert play that calls
@@ -342,8 +343,11 @@ episode now names a chapter of the textbook. On Machine the model collects three
 4/20 Machine and 1/20 HiddenRule (Table~\ref{tab:main}). The remaining failure is arithmetic. In 8 of the 13
 HiddenRule replies that write the coefficient formula, $a$ is wrong, and each error sits at a double negative
 (``$(-15 - -12 + 3)/2 = -6/2$''); $c$ is never wrong and $b$ is wrong only when $a$ is. The worked solutions in
-both layers wrote exactly that form. A chapter on signed arithmetic, with drills and every worked solution
-rewritten one term at a time, is running.
+both layers wrote exactly that form. We added a chapter on signed arithmetic, 200 drills, and every worked
+solution rewritten one term at a time. The first training run diverged; retrained at half the learning rate, the
+model solves 8/20 HiddenRule, the best of the textbook conditions, but none of its 20 final replies uses the
+one-term-at-a-time form it was taught, so the gain is not the arithmetic lesson, and Machine falls to 2/20. Across
+four textbook layers the renamed problem never comes back.
 
 \section{People versus LLMs}
 \begin{table}[h]
@@ -379,7 +383,7 @@ re-tested on fresh seeds. The varied-wording test was designed, with its repeate
 run. The textbook conditions were not planned in advance: each layer (application problems, then signed arithmetic)
 was built from a step-by-step breakdown of the previous layer's failures, so they are a sequence of diagnoses, not
 independent tests. One layer is void: the signed-arithmetic adapter diverged in training (training loss 0.13 rose to
-0.94) and its replies degenerated, so it is being retrained at half the learning rate and is not reported.
+0.94) and its replies degenerated; only the retrained run at half the learning rate is reported.
 
 The breakdown-then-retrain loop looks like recursive self-improvement only in form. The diagnosis and each new
 curriculum come from outside the model, the verifiers and goals are fixed, and nothing compounds: a better student

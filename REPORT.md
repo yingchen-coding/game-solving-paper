@@ -257,10 +257,12 @@ Ying 的问题："授人以鱼不如授人以渔"会不会改变迁移失败？�
 - 预测：如果黑盒/Machine 上算对的比例上来，Machine 回到 13/20 附近，说明差距就是算术写法；如果还是低，下一个怀疑对象是"写出计算"这个习惯本身（G9）。
 - **结果（2026-11-15 11:00，`runs/stick_theory_arith`、`runs/near_theory_arith_lenient`）：训练发散，这一次不算数。** 猜数 9/20（一直是 16–20）、黑盒 0/20、Machine 0/20，Machine 的 120 条回复全是"PPPP…"。黑盒上它照样问 0、1、2，然后不做任何计算，引用错章节（"Theorem 3.1"）直接报一个一次式。训练日志：train loss 在第 110 步降到 0.13，第 130–150 步又升到 0.94，最后保留的是第 200 步的 adapter（只用 4 个 val batch 选）。这是训练过程的问题，不是课程的结论。
 - **第三轮差距（过程）**：G10 训练不稳定。补法：学习率减半（1e-5），每 25 步用 16 个 val batch 评估再选 checkpoint（`pipeline2u.sh`：stick_theory_arith_lr1、near_theory_arith_lr1_lenient）。
+- **重训结果（2026-11-15 17:25，`runs/stick_theory_arith_lr1`、`runs/near_theory_arith_lr1_lenient`）**：没再崩。猜数 19、密码 2、**黑盒 8/20**（课本系列里最好，不加 4）、称硬币 7、电路 4、修bug 0；Lock 1、**Machine 2/20**。但黑盒 20 局最后回复里 **0 局**用了教的"一次一项"写法，所以 8/20 不能归功于算术课；Machine 依然失败。四层课本（提示词、课本、应用题、算术）都没让改名后的题回来，而 C17 的多种措辞一步就做到了 20/20。
 
 **C17（2026-11-15 12:30，初步，对照组在跑）授人以渔：同一技能、多种措辞，迁移到没见过的措辞**
 `runs/vary_hm`：蒸馏数据里黑盒例子各加 4 份换了函数名/变量/动词/名词的版本（不含 Machine 的 g/n/INPUT/SUBMIT），训练后 **黑盒 16/20、Machine 20/20**。对比：单独蒸馏 黑盒 15/20、Machine 8/20；不加 Machine 13/20（20 vs 13，Fisher p = 0.008；20 vs 8，p = 0.00005）。这是到目前为止第一次让训练的收益跨过了改名。数据量对照已出（`runs/dup_hm`，同样 4 份原样重复）：黑盒 12/20、**Machine 6/20**。多种措辞 vs 原样重复：Machine 20 vs 6（配对：14 局只有多种措辞成功，0 局只有重复成功，exact p = 0.0001；Fisher p = 3e-6），黑盒 16 vs 12（p = 0.30）。**数据量相同，没见过的措辞上的收益来自"多种措辞"。** 这是第一个训练收益跨过改名的条件，和人身上的"多样练习"（Schmidt 1975）一致。
 - 差距分析（下一步要回答的）：G11 只在一种技能上证明了 → 换第二种技能。称硬币没有现成的换皮版，新写 `twin_envs.py` 里的 Parcels（OddCoin 子类，同种子同一道题；coins→parcels，WEIGH→SCALE 且两盘用"/"分隔，ANSWER→CLAIM，结果写"LEFT pan sinks / LEVEL"），`twin_evaluate.py` 只是注册它再跑冻结的评测。`make_vary.py --skills hiddenrule,oddcoin`：称硬币的例子也各加 4 份换了物品名（token/weight/ball/block/marble）、动词（BALANCE/PLACE/HOLD/MATCH/SET）、分隔符（| / vs / against）、结果说法和交答案动词的版本，全部排除 Parcels 的说法（已验证）；对照组原样重复。`pipeline2v.sh`：twin_plain、twin_distill → 训练 vary2/dup2 → 各测 称硬币/Parcels/黑盒/Machine，再加只变黑盒的 vary 模型测 Parcels（技能之间会不会串）。G12 是"多少种措辞才够"（1 种 vs 5 种），排在后面。
+- **C18 初步（2026-11-15 18:52，对照组在训练）**：Parcels 不加 9/20，只蒸馏 12/20，**两种技能都换措辞 15/20**（vs 不加 p = 0.11，vs 只蒸馏 p = 0.50）；同一模型称硬币 19/20（无效 0），黑盒 9/20，Machine 16/20。不加的模型在 Parcels 上本来就有 9/20，余地比 Machine 小。功劳归属等原样重复的对照 `twin_dup2`。
 - 还没做、排在后面：举一反三（让模型自己把每道练习题改写成三种问法再解）、不愤不启（只在模型做错之后才给提示的训练数据）、因材施教（只在弱项上给指导，对应 C2 的专长逆转）。
 
 ## 5. 教育人 vs 教育 LLM 对照表
