@@ -34,7 +34,8 @@ calls the verifier before every answer, it learns the habit---on never-practised
 Comparing two solved cases, which helps people transfer, does worse than stating the rules. Near transfer, the
 easy kind for people, fails: the plain model solves 4/20 black-box problems and 13/20 of the identical problems
 renamed, and training gains on the first do not reach the second---unless the training data states the same
-problems in several wordings: then the renamed problem is solved 20/20, against 6/20 for the same data repeated. Stating the underlying theorems in the prompt
+problems in several wordings: then the renamed problem is solved 20/20, against 6/20 for the same data repeated
+(on a second skill, whose training already transfers, variation adds nothing). Stating the underlying theorems in the prompt
 (three values fix a quadratic, with the formula) leaves the practised games unchanged and drops the renamed problem
 from 13/20 to 1/20: the model announces that it is using the theory and stops doing the arithmetic. What works is
 self-explanation: with the same states and expert moves, training on reasoning the model wrote itself instead of
@@ -302,8 +303,19 @@ that exclude Machine's ($h$, $r$, $q$, \ldots; $t$, $k$, $m$, \ldots; \texttt{PR
 same four copies verbatim. With varied wordings the model solves 20/20 Machine problems; with the repeated copies,
 6/20 (14 problems solved only after varied training, none only after repeated; exact $p=.0001$), and distillation
 alone gives 8/20. HiddenRule itself is 16/20 versus 12/20 ($p=.30$). The amount of data is the same; the gain on
-the unseen wording comes from the variety. This is the first condition whose training gain crosses a rename.
-Whether it extends to a second skill (OddCoin, tested on a renamed twin) is running.
+the unseen wording comes from the variety. This is the first condition whose training gain crosses a rename. On the same seeds the repeated-data model
+writes out its equations in 8 of 20 final Machine replies (median 152 characters: ``Now we can confirm the
+polynomial\ldots''), though it does so on HiddenRule; the varied model writes them in 19 of 20 (521 characters),
+eliminating with $g(1)$ and $g(-1)$, and is right in all 19. What crosses the rename is the habit of doing the
+working, not the formula.
+
+The effect does not replicate on a second skill, and the reason is informative. We built Parcels, a renamed twin of
+OddCoin (parcels, \texttt{SCALE} with ``/'' between the pans, \texttt{CLAIM}; same seed, same puzzle), and varied
+OddCoin's wording the same way. Repeating OddCoin's data already lifts Parcels from 9/20 (plain) to 14/20, and
+varied wordings give 15/20 ($p=1.0$), though they cut contradicting moves from 7 to 2. OddCoin's skill crosses its
+rename without help; HiddenRule's does not, and there supervised training pushes the renamed task below the plain
+model (13 to 8 and 6/20) before variation lifts it to 20. Varied wording repairs the damage SFT does to a new
+surface; where SFT does none, it adds nothing measurable.
 
 \subsection{Teaching the theory: stated theorems become inert}
 Schools teach the theorem first and the word problems after. We wrote a five-chapter textbook in abstract

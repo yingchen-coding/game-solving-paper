@@ -18,6 +18,8 @@ FNAMES = ["h", "p", "r", "q", "F"]
 VARS = ["t", "k", "m", "z", "w"]
 PROBES = ["PROBE", "TEST", "ASK", "SAMPLE", "MEASURE"]
 FINALS = ["REPORT", "DECLARE", "GIVE", "STATE", "COMMIT"]
+# "one" mode: every copy in the same single alternative wording, to separate variety from seeing any second wording.
+ONE = {"noun": NOUNS[2], "f": FNAMES[0], "x": VARS[0], "probe": PROBES[0], "final": FINALS[0]}
 # OddCoin pools exclude the held-out twin's wording (twin_envs.Parcels: parcel, SCALE, '/', CLAIM, pan sinks, LEVEL).
 ITEMS = ["token", "weight", "ball", "block", "marble"]
 WEIGHS = ["BALANCE", "PLACE", "HOLD", "MATCH", "SET"]
@@ -61,8 +63,8 @@ def build(src: Path, mode: str, k: int, seed: int, skills: tuple[str, ...] = ("h
             if mode == "dup":
                 out.append(row)
                 continue
-            w = {"noun": rng.choice(NOUNS), "f": rng.choice(FNAMES), "x": rng.choice(VARS),
-                 "probe": rng.choice(PROBES), "final": rng.choice(FINALS)}
+            w = ONE if mode == "one" else {"noun": rng.choice(NOUNS), "f": rng.choice(FNAMES), "x": rng.choice(VARS),
+                                           "probe": rng.choice(PROBES), "final": rng.choice(FINALS)}
             out.append({"messages": [{**m, "content": rename(m["content"], w)} for m in row["messages"]]})
     for row in filter(is_oddcoin, rows) if "oddcoin" in skills else ():
         for _ in range(k):
@@ -79,7 +81,7 @@ def build(src: Path, mode: str, k: int, seed: int, skills: tuple[str, ...] = ("h
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("src", type=Path)
-    ap.add_argument("--mode", choices=["vary", "dup"], required=True)
+    ap.add_argument("--mode", choices=["vary", "one", "dup"], required=True)
     ap.add_argument("--k", type=int, default=4)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", type=Path, required=True)
