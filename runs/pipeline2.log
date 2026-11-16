@@ -71,3 +71,9 @@
 [2026-11-15 19:05:59] twin_dup2
 [2026-11-15 19:35:59] twin_dup2
 [2026-11-15 19:37:33] twin_vary
+[2026-11-15 19:40:32] twin_vary
+[2026-11-15 19:46:29] near_dup_workout
+[2026-11-15 19:54:51] near_plain_workout
+[2026-11-15 20:25:31] grpo adapters/q7_grpo
+[2026-11-15 20:26:12] grpo adapters/q7_grpo
+./pipeline2z.sh: line 109: 26382 Terminated: 15          $P grpo.py --envs hiddenrule,oddcoin --iters 60 --group 4 --out "$1" > "$1.log" 2>&1

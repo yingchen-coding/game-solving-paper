@@ -306,8 +306,10 @@ alone gives 8/20. HiddenRule itself is 16/20 versus 12/20 ($p=.30$). The amount 
 the unseen wording comes from the variety. This is the first condition whose training gain crosses a rename. On the same seeds the repeated-data model
 writes out its equations in 8 of 20 final Machine replies (median 152 characters: ``Now we can confirm the
 polynomial\ldots''), though it does so on HiddenRule; the varied model writes them in 19 of 20 (521 characters),
-eliminating with $g(1)$ and $g(-1)$, and is right in all 19. What crosses the rename is the habit of doing the
-working, not the formula.
+eliminating with $g(1)$ and $g(-1)$, and is right in all 19. Skipped working is a symptom, not the cause: telling
+the repeated-data model to write one equation per observed value, solve step by step and substitute back doubles
+the replies that write equations (8 to 16 of 20) and leaves it at 6/20, and the same instruction drops the plain
+model from 13 to 4/20 (11 lost, 1 gained; $p=.012$), like the theorem summary before it.
 
 The effect does not replicate on a second skill, and the reason is informative. We built Parcels, a renamed twin of
 OddCoin (parcels, \texttt{SCALE} with ``/'' between the pans, \texttt{CLAIM}; same seed, same puzzle), and varied
@@ -315,7 +317,10 @@ OddCoin's wording the same way. Repeating OddCoin's data already lifts Parcels f
 varied wordings give 15/20 ($p=1.0$), though they cut contradicting moves from 7 to 2. OddCoin's skill crosses its
 rename without help; HiddenRule's does not, and there supervised training pushes the renamed task below the plain
 model (13 to 8 and 6/20) before variation lifts it to 20. Varied wording repairs the damage SFT does to a new
-surface; where SFT does none, it adds nothing measurable.
+surface; where SFT does none, it adds nothing measurable. One result points the other way and was found after
+looking: the model whose HiddenRule data alone was varied, with OddCoin's data exactly as in plain distillation,
+solves 19/20 Parcels against 12/20 for distillation ($p=.020$), more than the model whose OddCoin data was also
+varied (15/20). It is being re-tested on 40 fresh seeds.
 
 \subsection{Teaching the theory: stated theorems become inert}
 Schools teach the theorem first and the word problems after. We wrote a five-chapter textbook in abstract
