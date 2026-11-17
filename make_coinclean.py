@@ -12,7 +12,10 @@ expert on a fresh practice seed. The expert sees only the transcript. Every thou
 the rest aside. The wording is the original OddCoin wording, so a comparison with dup2 (same row count, same
 HiddenRule rows) isolates what the OddCoin examples teach.
 
-    python make_coinclean.py data/q7_distill_dup2 --out data/q7_coinclean
+A first build (data/q7_coinclean) stored whole episodes, so only each episode's final ANSWER reply was trained; that
+run is void. Rows are now per-turn prefixes like the rows they replace.
+
+    python make_coinclean.py data/q7_distill_dup2 --out data/q7_coinclean2
 """
 import argparse
 import json
@@ -69,6 +72,19 @@ def expert(messages, env) -> str:
     return "Thought:" + " ".join(notes) + f"\n\nAction: WEIGH {span(left)} | {span(right)}"
 
 
+def turns(row: dict) -> int:
+    return sum(m["role"] == "assistant" for m in row["messages"])
+
+
+def prefix(messages: list[dict], k: int) -> list[dict]:
+    """The episode up to and including its k-th reply (or its last, if shorter).
+
+    The trainer masks every token but the final assistant message, so the source rows are per-turn prefixes
+    (build_sft.examples). Keeping each replaced row's turn count keeps the same per-turn mix."""
+    ends = [i for i, m in enumerate(messages) if m["role"] == "assistant"]
+    return messages[:ends[min(k, len(ends)) - 1] + 1]
+
+
 def build(src: Path, seed0: int) -> tuple[list[dict], int]:
     rows = [json.loads(line) for line in (src / "train.jsonl").open()]
     out, seed, swapped = [], seed0, 0
@@ -78,7 +94,7 @@ def build(src: Path, seed0: int) -> tuple[list[dict], int]:
             continue
         ep = agents.run_episode(envs.OddCoin(seed), expert)
         assert ep["success"] and ep["invalid"] == 0, f"expert failed on seed {seed}"
-        out.append({"messages": ep["messages"][:-1]})  # the closing observation is not trained on
+        out.append({"messages": prefix(ep["messages"], turns(row))})
         seed, swapped = seed + 1, swapped + 1
     assert seed < 10_000, "practice seeds must stay below the evaluation seeds"
     random.Random(0).shuffle(out)

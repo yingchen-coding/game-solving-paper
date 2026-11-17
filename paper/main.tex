@@ -328,8 +328,10 @@ move for move, so the seed count double-counts. On 40 fresh seeds (19 distinct p
 34, 27 and 27 of 40 (varied HiddenRule only, distillation, both varied, repeated), which again looks significant
 ($p=.0007$ for 39 against 27) and again is mostly duplicates. Pooled over the 20 distinct puzzles the two seed sets
 cover, they solve 19, 16, 15 and 15, and the varied-HiddenRule model beats distillation on 4 puzzles and loses on 1
-($p=.38$). We withdraw the cross-skill claim. Every Parcels and OddCoin comparison is being re-run once on each of
-the 21 puzzles.
+($p=.38$). We withdraw the cross-skill claim. Run once on each of the 21 puzzles, the plain model solves 13,
+distillation 17, repeated data 15 and the varied-HiddenRule model 20: it beats the plain model on 7 puzzles and
+loses none ($p=.016$), but against distillation it is 4 to 1 ($p=.38$), so what is established is that training on
+these games helps the renamed weighing task, not that varying another skill's wording does.
 
 Every condition so far is supervised. Outcome-reward reinforcement learning, the recipe behind DeepSeek-R1, is
 reported to generalise to rule and surface variants where supervised fine-tuning memorises \citep{chu2025}. We ran
