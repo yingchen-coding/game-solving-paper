@@ -347,8 +347,14 @@ training they grow from 19 to 212 per 20 iterations. An outcome-only reward does
 adds a format reward for this reason, and that variant is running. Read with a parser that forgives the label, the
 same adapter solves Machine 18/20 (plain 13, 6 to 1, $p=.13$; original-wording GRPO 10, 8 to 0, $p=.008$) and
 every one of the 13 distinct Parcels puzzles in the test seeds (plain 7; 6 to 0, $p=.031$). This was found after
-looking and uses a parser the other conditions were not scored with, so it is being re-tested on all 21 Parcels
-puzzles and on 40 fresh Machine problems with the same parser for every model.
+looking and uses a parser the other conditions were not scored with, so we re-tested it on new problems with the
+same lenient parser for every model. On all 21 Parcels puzzles it solves 19 (plain 13, original-wording GRPO 12;
+paired 8 to 2 and 9 to 2), and on 40 fresh Machine problems 28 (plain 19, original-wording GRPO 19; 16 to 7 and 15
+to 6). Neither test alone reaches $p<.05$ ($p=.065$--$.11$); pooled over both, randomised-wording GRPO beats the plain
+model 24 to 9 ($p=.014$) and original-wording GRPO 24 to 8 ($p=.007$), while original-wording GRPO ties the plain
+model on Machine (10 to 10). The direction matches supervised training: the gain crosses the rename only when
+practice varied the wording. It is not yet usable as trained, since its format has to be read leniently; a run with
+a format reward is queued.
 
 \subsection{Teaching the theory: stated theorems become inert}
 Schools teach the theorem first and the word problems after. We wrote a five-chapter textbook in abstract
