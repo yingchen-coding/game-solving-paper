@@ -1,0 +1,151 @@
+{
+ "kept": [
+  {
+   "noun": "polynomial",
+   "f": "p",
+   "x": "y",
+   "probe": "PROBE",
+   "final": "IDENTIFY"
+  },
+  {
+   "noun": "polynomial",
+   "f": "P",
+   "x": "t",
+   "probe": "PROBE",
+   "final": "REVEAL"
+  },
+  {
+   "noun": "polynomial",
+   "f": "p",
+   "x": "y",
+   "probe": "PROBE",
+   "final": "FINALIZE"
+  },
+  {
+   "noun": "polynomial",
+   "f": "P",
+   "x": "t",
+   "probe": "PROBE",
+   "final": "FINALIZE"
+  },
+  {
+   "noun": "polynomial",
+   "f": "P",
+   "x": "t",
+   "probe": "PROBE",
+   "final": "GIVE"
+  },
+  {
+   "noun": "mysterious polynomial",
+   "f": "P",
+   "x": "y",
+   "probe": "PROBE",
+   "final": "FORMULATE"
+  },
+  {
+   "noun": "polynomial",
+   "f": "P",
+   "x": "y",
+   "probe": "PROBE",
+   "final": "GIVE"
+  },
+  {
+   "noun": "polynomial",
+   "f": "P",
+   "x": "y",
+   "probe": "PROBE",
+   "final": "OUTPUT"
+  },
+  {
+   "noun": "polynomial",
+   "f": "P",
+   "x": "t",
+   "probe": "PROBE",
+   "final": "STATE"
+  },
+  {
+   "noun": "polynomial expression",
+   "f": "P",
+   "x": "y",
+   "probe": "PROBE",
+   "final": "OUTPUT"
+  },
+  {
+   "noun": "polynomial",
+   "f": "P",
+   "x": "y",
+   "probe": "PROBE",
+   "final": "FINALIZE"
+  },
+  {
+   "noun": "polynomial",
+   "f": "P",
+   "x": "y",
+   "probe": "PROBE",
+   "final": "REVEAL"
+  },
+  {
+   "noun": "polynomial",
+   "f": "P",
+   "x": "y",
+   "probe": "PROBE",
+   "final": "FORMULATE"
+  },
+  {
+   "noun": "polynomial",
+   "f": "p",
+   "x": "t",
+   "probe": "PROBE",
+   "final": "FINALIZE"
+  },
+  {
+   "noun": "polynomial",
+   "f": "p",
+   "x": "t",
+   "probe": "PROBE",
+   "final": "FORMULATE"
+  },
+  {
+   "noun": "polynomial",
+   "f": "P",
+   "x": "y",
+   "probe": "PROBE",
+   "final": "PROVIDE"
+  },
+  {
+   "noun": "polynomial",
+   "f": "p",
+   "x": "t",
+   "probe": "PROBE",
+   "final": "GIVE"
+  },
+  {
+   "noun": "polynomial",
+   "f": "P",
+   "x": "t",
+   "probe": "PROBE",
+   "final": "SENT"
+  },
+  {
+   "noun": "mystery polynomial",
+   "f": "P",
+   "x": "t",
+   "probe": "PROBE",
+   "final": "REVEAL"
+  },
+  {
+   "noun": "polynomial",
+   "f": "P",
+   "x": "y",
+   "probe": "PROBE",
+   "final": "DELIVER"
+  }
+ ],
+ "rejected": {
+  "f": 8,
+  "x": 15,
+  "duplicate": 18,
+  "noun": 2,
+  "final": 1
+ }
+}

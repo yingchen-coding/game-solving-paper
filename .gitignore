@@ -5,3 +5,4 @@ __pycache__/
 adapters/
 runs_persistence_v0/
 paper/main.pdf
+void/

@@ -343,6 +343,8 @@ Ying："deepseek 不是有源码吗？你不能读一下？研究一下怎么做
 - 实验（`make_selfvary.py`）：让 Qwen 自己提 20 套黑盒措辞（温度 1.0，JSON），机械检查过滤（格式、不能用原措辞 / Machine 的 g、n、INPUT、SUBMIT / 保留的 ASK、两个动词不同），被拒的按原因计数、不修；然后按 C17 同样的方法（每个黑盒例子 4 份）重建数据，训练，测黑盒 + Machine（`selfvary_hm`）。
 - 判断：接近 20/20 = 这一步学生自己能做，闭环不需要更强的老师；接近 6/20 = 瓶颈在"出题"，不在学习。
 
+- C23 Qwen 自己提的措辞（`data/q7_selfvary/wordings.json`）：80 次提议留 20 套，被拒 44 次（重复 18、变量字母 15、函数字母 8、名词 2、动词 1）。留下的偏单一：名词多是 polynomial，函数名多是 p/P，变量多是 y/t，查询动词几乎都是 PROBE——比实验者写的词池窄。
+
 **C24（2026-11-16 21:15，设计，排队 `pipeline2ah.sh`）第二个模型系列：只用本地开源模型**
 - Ying："DeepSeek API … no"，其余照做。用 MLX 的 Llama-3.1-8B-Instruct-4bit（本地，4.53 GB）重复 C17：同样的数据（多种措辞 vs 原样重复）、同样的 LoRA 设置，测黑盒 + Machine（`llama_plain_hm`、`llama_vary_hm`、`llama_dup_hm`）。磁盘只剩约 7 GB，脚本在空间不足 7 GB 时跳过并记日志，不会把盘写满。
 
@@ -367,7 +369,7 @@ Ying："deepseek 不是有源码吗？你不能读一下？研究一下怎么做
 | 从错误中学（Große & Renkl 2007，待核实） | 错误示范 + 讲解有帮助 | 未做 | ？（可能违背） | 待建 |
 | 交错练习（Rohrer & Taylor 2007，待核实） | 交错比分块迁移好 | 未做（= 训练数据顺序） | ？ | 待建 |
 
-## 6. 正在跑（`pipeline2ah.sh`：2026-11-16 21:15 加 Llama 复现；`pipeline2ag.sh`：2026-11-16 21:00 加学生自写措辞；`pipeline2af.sh`：2026-11-16 19:40 宽松解析复测 GRPO；`pipeline2ae.sh`：2026-11-16 19:10 重训干净称硬币数据；`pipeline2ad.sh`：2026-11-16 13:45 宽松解析诊断 + 带格式奖励的随机措辞 GRPO；`pipeline2ac.sh`：2026-11-16 11:30 Parcels 全 21 题评测 + 干净称硬币数据；`pipeline2aa.sh`：2026-11-16 03:15 加随机措辞 GRPO；`pipeline2z.sh`：2026-11-15 20:30 加 Parcels 新种子复测；`pipeline2x.sh`：2026-11-15 19:30 加拒绝采样对照；`pipeline2w.sh`：2026-11-15 19:15 加 GRPO；`pipeline2v.sh`：2026-11-15 12:50 第二种技能的授人以渔；`pipeline2u.sh`：2026-11-15 12:30 算术层降学习率重训；`pipeline2t.sh`：2026-11-15 04:15 加带符号算术层；`pipeline2s.sh`：2026-11-14 22:10 加应用题层；`pipeline2r.sh`：2026-11-14 21:00 加宽松解析复测；`pipeline2q.sh`：2026-11-14 17:15 换成不破坏格式的课本；`pipeline2p.sh`：2026-11-14 教理论排最前，然后授人以渔 / 化陌生为熟悉；`pipeline2n.sh`：2026-11-14 512 诊断做完、去掉远迁移诊断，接着跑新种子复测；`pipeline2m.sh`：512 token 诊断；`pipeline2l.sh`：2026-11-13 把近迁移基线调到最前；`pipeline2k.sh`，日志 `runs/pipeline2.log`；2026-11-12 按"聚焦解题能力"重排）
+## 6. 正在跑（`pipeline2ai.sh`：2026-11-16 23:47 重训 selfvary，Llama 等腾出空间；`pipeline2ah.sh`：2026-11-16 21:15 加 Llama 复现；`pipeline2ag.sh`：2026-11-16 21:00 加学生自写措辞；`pipeline2af.sh`：2026-11-16 19:40 宽松解析复测 GRPO；`pipeline2ae.sh`：2026-11-16 19:10 重训干净称硬币数据；`pipeline2ad.sh`：2026-11-16 13:45 宽松解析诊断 + 带格式奖励的随机措辞 GRPO；`pipeline2ac.sh`：2026-11-16 11:30 Parcels 全 21 题评测 + 干净称硬币数据；`pipeline2aa.sh`：2026-11-16 03:15 加随机措辞 GRPO；`pipeline2z.sh`：2026-11-15 20:30 加 Parcels 新种子复测；`pipeline2x.sh`：2026-11-15 19:30 加拒绝采样对照；`pipeline2w.sh`：2026-11-15 19:15 加 GRPO；`pipeline2v.sh`：2026-11-15 12:50 第二种技能的授人以渔；`pipeline2u.sh`：2026-11-15 12:30 算术层降学习率重训；`pipeline2t.sh`：2026-11-15 04:15 加带符号算术层；`pipeline2s.sh`：2026-11-14 22:10 加应用题层；`pipeline2r.sh`：2026-11-14 21:00 加宽松解析复测；`pipeline2q.sh`：2026-11-14 17:15 换成不破坏格式的课本；`pipeline2p.sh`：2026-11-14 教理论排最前，然后授人以渔 / 化陌生为熟悉；`pipeline2n.sh`：2026-11-14 512 诊断做完、去掉远迁移诊断，接着跑新种子复测；`pipeline2m.sh`：512 token 诊断；`pipeline2l.sh`：2026-11-13 把近迁移基线调到最前；`pipeline2k.sh`，日志 `runs/pipeline2.log`；2026-11-12 按"聚焦解题能力"重排）
 与另一个 agent 共用机器：每一步先等没有别的 7B 进程。代码冻结在 `frozen/`（max_tokens 256，可与已完成条件比较）。
 1. stick_diverse 收尾 → stick_workedcheck2（4 种游戏对照）
 2. 每步算术写出 + 检查：8 种游戏（q7_procdiverse）vs 4 种游戏（q7_proc4）
@@ -383,6 +385,7 @@ Ying："deepseek 不是有源码吗？你不能读一下？研究一下怎么做
 - 检查次数上限的 bug：用满 12 次后再 CHECK 不扣步数 → 死循环。已修：超过上限算一次普通行动。之前受影响 3 局（检查工具未训练版）。
 - 两个 7B 同时跑会内存不够、后台任务被杀：一次只跑一个。
 - 正在运行的 bash 脚本不能改：杀掉父脚本，写新脚本，新脚本先等现有进程结束。
+- 2026-11-16 23:41：`q7_selfvary` 训练到第 120 轮后保存失败（`save_safetensors Failed to open file`），当时磁盘只剩约 7.8 GB，前一个 23 MB 的存档刚写成功。评测因没有适配器直接失败。已重排（`pipeline2ai.sh`），Llama 下载的空间门槛从 7 GB 提到 10 GB，现在会跳过。
 - 2026-11-16：**训练器只训练每行最后一条回复**。多轮数据必须一轮一行（前缀），整局放一行只会学到最后一轮。`make_coinclean.py` 第一版犯了这个错，那一轮作废。
 - 2026-11-16：**种子不等于不同的题**。称硬币/Parcels 只有 21 道题，20 个种子只有 13 道不同；贪心解码会原样重演，按种子算的 p 值被抬高，导致一个跨技能结论先报出来又撤回。以后在小题库的游戏上按不同的题计数，或用 `parcels21` 每题一次。
 - 2026-11-15 20:28：换队列时 `grpo.py` 不在 gate 的进程名单里，新队列又启动了一个 GRPO（两个 7B 同时），约 1 分钟内发现并杀掉，日志里还没写入任何一轮。已把 `grpo\.py` 加进 gate，并让 grpo_train 先 gate 再判断要不要跳过。
