@@ -1,0 +1,4 @@
+[2026-11-16 20:41:42] repL_machine_grpo
+[2026-11-16 23:32:19] make_selfvary
+[2026-11-16 23:36:14] train adapters/q7_selfvary
+[2026-11-16 23:44:10] selfvary_hm
