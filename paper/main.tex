@@ -308,7 +308,11 @@ alone gives 8/20. HiddenRule itself is 16/20 versus 12/20 ($p=.30$). The amount 
 the unseen wording comes from the variety. This is the first condition whose training gain crosses a rename. One alternative wording is not enough: four copies all in the same new
 wording give Machine 9/20 (at the same training checkpoint as the others; the checkpoint picked by validation loss,
 iteration 49, broke the reply format and gave 7/20), level with repeats (7 to 4, $p=.55$) and below varied
-wordings (0 to 11, $p=.001$). What carries the skill across is seeing several wordings, not one other wording. On the same seeds the repeated-data model
+wordings (0 to 11, $p=.001$). What carries the skill across is seeing several wordings, not one other wording. On a second model family,
+Llama-3.1-8B-Instruct trained on the same data, the varied wordings again beat the repeated data on HiddenRule
+(10/20 against 1/20, 9 to 0, $p=.004$; untrained 3/20), but Machine stays near the floor (untrained 0/20, varied 3,
+repeated 1). Llama collects three or more readings in almost every Machine episode and then submits a wrong
+formula: its bottleneck on the renamed task is the algebra, which no wording can supply. On the same seeds the repeated-data model
 writes out its equations in 8 of 20 final Machine replies (median 152 characters: ``Now we can confirm the
 polynomial\ldots''), though it does so on HiddenRule; the varied model writes them in 19 of 20 (521 characters),
 eliminating with $g(1)$ and $g(-1)$, and is right in all 19. Skipped working is a symptom, not the cause: telling
@@ -450,7 +454,7 @@ them, the same data solves Machine 18/20, against 6/20 for the repeated data (13
 experimenter's wordings (0 to 2, $p=.5$). The step a teacher did for the varied-wording result the student can do
 for itself, even with little variety; the diagnosis step is still ours. Next: how little variety suffices (one fixed
 alternative wording), learning from erroneous examples, interleaved versus blocked practice, and a second model family
-(a local Llama-3.1-8B run waits for disk space).
+whose renamed-task baseline is above the floor.
 
 \section{Related work}
 Expert iteration and self-taught reasoning fine-tune on a model's own verified successes

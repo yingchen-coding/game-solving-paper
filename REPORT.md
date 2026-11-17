@@ -353,6 +353,16 @@ Ying："deepseek 不是有源码吗？你不能读一下？研究一下怎么做
 
 **C24（2026-11-16 21:15，设计，排队 `pipeline2ah.sh`）第二个模型系列：只用本地开源模型**
 - Ying："DeepSeek API … no"，其余照做。用 MLX 的 Llama-3.1-8B-Instruct-4bit（本地，4.53 GB）重复 C17：同样的数据（多种措辞 vs 原样重复）、同样的 LoRA 设置，测黑盒 + Machine（`llama_plain_hm`、`llama_vary_hm`、`llama_dup_hm`）。磁盘只剩约 7 GB，脚本在空间不足 7 GB 时跳过并记日志，不会把盘写满。
+- **C24 结果（2026-11-17 13:28，`runs/llama_*_hm`）Llama-3.1-8B：多种措辞在练过的措辞上胜出，改名后的题卡在地板。**
+
+| Llama | 不加 | 多种措辞 | 原样重复 |
+|---|---|---|---|
+| 黑盒（练过的措辞） | 3 | **10** | 1 |
+| Machine（改名） | 0 | 3 | 1 |
+
+  - 黑盒：多种措辞 vs 原样重复 9 胜 0 负（p = 0.004）；原样重复反而比不加低（1 vs 3）。Machine：3 vs 1（p = 0.63），3 vs 0（p = 0.25）。
+  - 逐步：Machine 上 Llama 几乎每局都拿到 ≥3 个读数（不加 20/20、多种 17/20、重复 20/20），然后交错公式（18、11、14 局）。**卡在代数，不在措辞**；措辞变化补不了它本来不会的计算。Qwen 不加就有 13/20，所以在 Qwen 上能看到措辞的作用。
+  - 结论：多种措辞胜过原样重复这一点在第二个模型系列上重现（在练过的题上）；"跨过改名"需要模型本来就会这道题的计算。论文已写入。
 
 ## 5. 教育人 vs 教育 LLM 对照表
 
@@ -375,7 +385,7 @@ Ying："deepseek 不是有源码吗？你不能读一下？研究一下怎么做
 | 从错误中学（Große & Renkl 2007，待核实） | 错误示范 + 讲解有帮助 | 未做 | ？（可能违背） | 待建 |
 | 交错练习（Rohrer & Taylor 2007，待核实） | 交错比分块迁移好 | 未做（= 训练数据顺序） | ？ | 待建 |
 
-## 6. 正在跑（`pipeline2ak.sh`：2026-11-17 09:50 单一措辞取第 140 轮存档复测；Llama 不加的评测在跑；`pipeline2aj.sh`：2026-11-17 00:10 单一措辞剂量提前；`pipeline2ai.sh`：2026-11-16 23:47 重训 selfvary，Llama 等腾出空间；`pipeline2ah.sh`：2026-11-16 21:15 加 Llama 复现；`pipeline2ag.sh`：2026-11-16 21:00 加学生自写措辞；`pipeline2af.sh`：2026-11-16 19:40 宽松解析复测 GRPO；`pipeline2ae.sh`：2026-11-16 19:10 重训干净称硬币数据；`pipeline2ad.sh`：2026-11-16 13:45 宽松解析诊断 + 带格式奖励的随机措辞 GRPO；`pipeline2ac.sh`：2026-11-16 11:30 Parcels 全 21 题评测 + 干净称硬币数据；`pipeline2aa.sh`：2026-11-16 03:15 加随机措辞 GRPO；`pipeline2z.sh`：2026-11-15 20:30 加 Parcels 新种子复测；`pipeline2x.sh`：2026-11-15 19:30 加拒绝采样对照；`pipeline2w.sh`：2026-11-15 19:15 加 GRPO；`pipeline2v.sh`：2026-11-15 12:50 第二种技能的授人以渔；`pipeline2u.sh`：2026-11-15 12:30 算术层降学习率重训；`pipeline2t.sh`：2026-11-15 04:15 加带符号算术层；`pipeline2s.sh`：2026-11-14 22:10 加应用题层；`pipeline2r.sh`：2026-11-14 21:00 加宽松解析复测；`pipeline2q.sh`：2026-11-14 17:15 换成不破坏格式的课本；`pipeline2p.sh`：2026-11-14 教理论排最前，然后授人以渔 / 化陌生为熟悉；`pipeline2n.sh`：2026-11-14 512 诊断做完、去掉远迁移诊断，接着跑新种子复测；`pipeline2m.sh`：512 token 诊断；`pipeline2l.sh`：2026-11-13 把近迁移基线调到最前；`pipeline2k.sh`，日志 `runs/pipeline2.log`；2026-11-12 按"聚焦解题能力"重排）
+## 6. 正在跑（`pipeline2ak.sh`：2026-11-17 13:28 起带格式奖励的随机措辞 GRPO（约 7 小时）；`pipeline2aj.sh`：2026-11-17 00:10 单一措辞剂量提前；`pipeline2ai.sh`：2026-11-16 23:47 重训 selfvary，Llama 等腾出空间；`pipeline2ah.sh`：2026-11-16 21:15 加 Llama 复现；`pipeline2ag.sh`：2026-11-16 21:00 加学生自写措辞；`pipeline2af.sh`：2026-11-16 19:40 宽松解析复测 GRPO；`pipeline2ae.sh`：2026-11-16 19:10 重训干净称硬币数据；`pipeline2ad.sh`：2026-11-16 13:45 宽松解析诊断 + 带格式奖励的随机措辞 GRPO；`pipeline2ac.sh`：2026-11-16 11:30 Parcels 全 21 题评测 + 干净称硬币数据；`pipeline2aa.sh`：2026-11-16 03:15 加随机措辞 GRPO；`pipeline2z.sh`：2026-11-15 20:30 加 Parcels 新种子复测；`pipeline2x.sh`：2026-11-15 19:30 加拒绝采样对照；`pipeline2w.sh`：2026-11-15 19:15 加 GRPO；`pipeline2v.sh`：2026-11-15 12:50 第二种技能的授人以渔；`pipeline2u.sh`：2026-11-15 12:30 算术层降学习率重训；`pipeline2t.sh`：2026-11-15 04:15 加带符号算术层；`pipeline2s.sh`：2026-11-14 22:10 加应用题层；`pipeline2r.sh`：2026-11-14 21:00 加宽松解析复测；`pipeline2q.sh`：2026-11-14 17:15 换成不破坏格式的课本；`pipeline2p.sh`：2026-11-14 教理论排最前，然后授人以渔 / 化陌生为熟悉；`pipeline2n.sh`：2026-11-14 512 诊断做完、去掉远迁移诊断，接着跑新种子复测；`pipeline2m.sh`：512 token 诊断；`pipeline2l.sh`：2026-11-13 把近迁移基线调到最前；`pipeline2k.sh`，日志 `runs/pipeline2.log`；2026-11-12 按"聚焦解题能力"重排）
 与另一个 agent 共用机器：每一步先等没有别的 7B 进程。代码冻结在 `frozen/`（max_tokens 256，可与已完成条件比较）。
 1. stick_diverse 收尾 → stick_workedcheck2（4 种游戏对照）
 2. 每步算术写出 + 检查：8 种游戏（q7_procdiverse）vs 4 种游戏（q7_proc4）

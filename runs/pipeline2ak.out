@@ -1,2 +1,6 @@
 [2026-11-17 09:49:12] one_i140_hm
 [2026-11-17 10:37:27] train adapters/llama_distill_vary
+[2026-11-17 11:06:30] train adapters/llama_distill_dup
+[2026-11-17 11:36:29] llama_vary_hm
+[2026-11-17 12:19:32] llama_dup_hm
+[2026-11-17 13:28:46] grpo adapters/q7_grpo_randfmt
