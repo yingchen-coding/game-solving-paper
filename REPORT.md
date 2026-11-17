@@ -332,6 +332,7 @@ Ying："deepseek 不是有源码吗？你不能读一下？研究一下怎么做
 - 逐步差距：无效动作 2 → **198 次 / 80 局**（对比原措辞 GRPO）（黑盒 60、Parcels 70、Machine 44、称硬币 24）。几乎全是动作本身对、标签坏了：`Action: ACTION QUERY 0`、`Action: Action: INPUT 0`，或者把 `Action:` 写在想法同一行。训练日志里无效动作每 20 轮 19 → 56 → 212；随机措辞黑盒的训练奖励前半 0.50、后半 0.18。
 - 原因：只看结果的奖励不管格式。全输的组被跳过，有输有赢的组里"格式坏的输"和"格式好的输"得一样的负优势，往下压时把格式也压坏了。DeepSeek-R1 的奖励正是"正确 + 格式"两项。
 - 补法（`pipeline2ad.sh`）：(1) 诊断 `twin_grpo_rand_lenient`：同一个模型，解析器容忍错位和重复标签（`lenient_twin_evaluate.py`），看格式下面的技能还在不在；(2) `grpo.py --format-penalty 1`：奖励 = 成功 − 无效动作占比，全输但格式不同的组也有梯度 → `q7_grpo_randfmt` → `twin_grpo_randfmt`。
+- **C22 诊断结果（2026-11-16 19:20，`runs/twin_grpo_rand_lenient`）：格式下面的技能还在，而且跨过了改名。** 同一个随机措辞 GRPO 模型，只换成容忍重复/错位标签的解析器：黑盒 0→11、称硬币 14→17、**Machine 12→18**、**Parcels 6→20**（无效动作 198→6）。对比：Machine 不加 13（宽松解析也是 13，6 胜 1 负，p = 0.13），原措辞 GRPO 10（8 胜 0 负，p = 0.008）；Parcels 按不同的题 13/13，不加 7/13（6–0，p = 0.031），原措辞 GRPO 7/13（6–0，p = 0.031）。**如果复测成立，这是第一次 RL 的收益跨过改名：只有在训练里也换措辞时才出现（和 C17 的 SFT 一样），原措辞的 RL 不行。** 但这是看过数据后找到的，而且解析器和别的条件不一样 → 复测（`pipeline2af.sh`）：所有模型都用同一个宽松解析器，Parcels 全部 21 道（`p21L_*`）、Machine 新种子 40 局（`repL_machine_*`，39 道不同的题），比较 不加 / 原措辞 GRPO / 随机措辞 GRPO。
 
 ## 5. 教育人 vs 教育 LLM 对照表
 
@@ -354,7 +355,7 @@ Ying："deepseek 不是有源码吗？你不能读一下？研究一下怎么做
 | 从错误中学（Große & Renkl 2007，待核实） | 错误示范 + 讲解有帮助 | 未做 | ？（可能违背） | 待建 |
 | 交错练习（Rohrer & Taylor 2007，待核实） | 交错比分块迁移好 | 未做（= 训练数据顺序） | ？ | 待建 |
 
-## 6. 正在跑（`pipeline2ae.sh`：2026-11-16 19:10 重训干净称硬币数据；`pipeline2ad.sh`：2026-11-16 13:45 宽松解析诊断 + 带格式奖励的随机措辞 GRPO；`pipeline2ac.sh`：2026-11-16 11:30 Parcels 全 21 题评测 + 干净称硬币数据；`pipeline2aa.sh`：2026-11-16 03:15 加随机措辞 GRPO；`pipeline2z.sh`：2026-11-15 20:30 加 Parcels 新种子复测；`pipeline2x.sh`：2026-11-15 19:30 加拒绝采样对照；`pipeline2w.sh`：2026-11-15 19:15 加 GRPO；`pipeline2v.sh`：2026-11-15 12:50 第二种技能的授人以渔；`pipeline2u.sh`：2026-11-15 12:30 算术层降学习率重训；`pipeline2t.sh`：2026-11-15 04:15 加带符号算术层；`pipeline2s.sh`：2026-11-14 22:10 加应用题层；`pipeline2r.sh`：2026-11-14 21:00 加宽松解析复测；`pipeline2q.sh`：2026-11-14 17:15 换成不破坏格式的课本；`pipeline2p.sh`：2026-11-14 教理论排最前，然后授人以渔 / 化陌生为熟悉；`pipeline2n.sh`：2026-11-14 512 诊断做完、去掉远迁移诊断，接着跑新种子复测；`pipeline2m.sh`：512 token 诊断；`pipeline2l.sh`：2026-11-13 把近迁移基线调到最前；`pipeline2k.sh`，日志 `runs/pipeline2.log`；2026-11-12 按"聚焦解题能力"重排）
+## 6. 正在跑（`pipeline2af.sh`：2026-11-16 19:40 宽松解析复测 GRPO；`pipeline2ae.sh`：2026-11-16 19:10 重训干净称硬币数据；`pipeline2ad.sh`：2026-11-16 13:45 宽松解析诊断 + 带格式奖励的随机措辞 GRPO；`pipeline2ac.sh`：2026-11-16 11:30 Parcels 全 21 题评测 + 干净称硬币数据；`pipeline2aa.sh`：2026-11-16 03:15 加随机措辞 GRPO；`pipeline2z.sh`：2026-11-15 20:30 加 Parcels 新种子复测；`pipeline2x.sh`：2026-11-15 19:30 加拒绝采样对照；`pipeline2w.sh`：2026-11-15 19:15 加 GRPO；`pipeline2v.sh`：2026-11-15 12:50 第二种技能的授人以渔；`pipeline2u.sh`：2026-11-15 12:30 算术层降学习率重训；`pipeline2t.sh`：2026-11-15 04:15 加带符号算术层；`pipeline2s.sh`：2026-11-14 22:10 加应用题层；`pipeline2r.sh`：2026-11-14 21:00 加宽松解析复测；`pipeline2q.sh`：2026-11-14 17:15 换成不破坏格式的课本；`pipeline2p.sh`：2026-11-14 教理论排最前，然后授人以渔 / 化陌生为熟悉；`pipeline2n.sh`：2026-11-14 512 诊断做完、去掉远迁移诊断，接着跑新种子复测；`pipeline2m.sh`：512 token 诊断；`pipeline2l.sh`：2026-11-13 把近迁移基线调到最前；`pipeline2k.sh`，日志 `runs/pipeline2.log`；2026-11-12 按"聚焦解题能力"重排）
 与另一个 agent 共用机器：每一步先等没有别的 7B 进程。代码冻结在 `frozen/`（max_tokens 256，可与已完成条件比较）。
 1. stick_diverse 收尾 → stick_workedcheck2（4 种游戏对照）
 2. 每步算术写出 + 检查：8 种游戏（q7_procdiverse）vs 4 种游戏（q7_proc4）

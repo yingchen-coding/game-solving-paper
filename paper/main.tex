@@ -344,7 +344,11 @@ made supervised training cross the rename, reinforcement learning gets worse eve
 14, Machine 12, Parcels 6). The skill is not what broke: invalid moves rise from 2 to 198 across the 80 games (against GRPO on the original wording),
 nearly all of them a well-formed move behind a doubled or misplaced label (\texttt{Action: ACTION QUERY 0}), and in
 training they grow from 19 to 212 per 20 iterations. An outcome-only reward does not protect the format; DeepSeek-R1
-adds a format reward for this reason, and that variant is running.
+adds a format reward for this reason, and that variant is running. Read with a parser that forgives the label, the
+same adapter solves Machine 18/20 (plain 13, 6 to 1, $p=.13$; original-wording GRPO 10, 8 to 0, $p=.008$) and
+every one of the 13 distinct Parcels puzzles in the test seeds (plain 7; 6 to 0, $p=.031$). This was found after
+looking and uses a parser the other conditions were not scored with, so it is being re-tested on all 21 Parcels
+puzzles and on 40 fresh Machine problems with the same parser for every model.
 
 \subsection{Teaching the theory: stated theorems become inert}
 Schools teach the theorem first and the word problems after. We wrote a five-chapter textbook in abstract
