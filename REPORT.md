@@ -341,6 +341,9 @@ Ying："deepseek 不是有源码吗？你不能读一下？研究一下怎么做
 - 实验（`make_selfvary.py`）：让 Qwen 自己提 20 套黑盒措辞（温度 1.0，JSON），机械检查过滤（格式、不能用原措辞 / Machine 的 g、n、INPUT、SUBMIT / 保留的 ASK、两个动词不同），被拒的按原因计数、不修；然后按 C17 同样的方法（每个黑盒例子 4 份）重建数据，训练，测黑盒 + Machine（`selfvary_hm`）。
 - 判断：接近 20/20 = 这一步学生自己能做，闭环不需要更强的老师；接近 6/20 = 瓶颈在"出题"，不在学习。
 
+**C24（2026-11-16 21:15，设计，排队 `pipeline2ah.sh`）第二个模型系列：只用本地开源模型**
+- Ying："DeepSeek API … no"，其余照做。用 MLX 的 Llama-3.1-8B-Instruct-4bit（本地，4.53 GB）重复 C17：同样的数据（多种措辞 vs 原样重复）、同样的 LoRA 设置，测黑盒 + Machine（`llama_plain_hm`、`llama_vary_hm`、`llama_dup_hm`）。磁盘只剩约 7 GB，脚本在空间不足 7 GB 时跳过并记日志，不会把盘写满。
+
 ## 5. 教育人 vs 教育 LLM 对照表
 
 | 教育学结论 | 人身上 | LLM 上 | 一致/违背 | 状态 |
@@ -362,7 +365,7 @@ Ying："deepseek 不是有源码吗？你不能读一下？研究一下怎么做
 | 从错误中学（Große & Renkl 2007，待核实） | 错误示范 + 讲解有帮助 | 未做 | ？（可能违背） | 待建 |
 | 交错练习（Rohrer & Taylor 2007，待核实） | 交错比分块迁移好 | 未做（= 训练数据顺序） | ？ | 待建 |
 
-## 6. 正在跑（`pipeline2ag.sh`：2026-11-16 21:00 加学生自写措辞；`pipeline2af.sh`：2026-11-16 19:40 宽松解析复测 GRPO；`pipeline2ae.sh`：2026-11-16 19:10 重训干净称硬币数据；`pipeline2ad.sh`：2026-11-16 13:45 宽松解析诊断 + 带格式奖励的随机措辞 GRPO；`pipeline2ac.sh`：2026-11-16 11:30 Parcels 全 21 题评测 + 干净称硬币数据；`pipeline2aa.sh`：2026-11-16 03:15 加随机措辞 GRPO；`pipeline2z.sh`：2026-11-15 20:30 加 Parcels 新种子复测；`pipeline2x.sh`：2026-11-15 19:30 加拒绝采样对照；`pipeline2w.sh`：2026-11-15 19:15 加 GRPO；`pipeline2v.sh`：2026-11-15 12:50 第二种技能的授人以渔；`pipeline2u.sh`：2026-11-15 12:30 算术层降学习率重训；`pipeline2t.sh`：2026-11-15 04:15 加带符号算术层；`pipeline2s.sh`：2026-11-14 22:10 加应用题层；`pipeline2r.sh`：2026-11-14 21:00 加宽松解析复测；`pipeline2q.sh`：2026-11-14 17:15 换成不破坏格式的课本；`pipeline2p.sh`：2026-11-14 教理论排最前，然后授人以渔 / 化陌生为熟悉；`pipeline2n.sh`：2026-11-14 512 诊断做完、去掉远迁移诊断，接着跑新种子复测；`pipeline2m.sh`：512 token 诊断；`pipeline2l.sh`：2026-11-13 把近迁移基线调到最前；`pipeline2k.sh`，日志 `runs/pipeline2.log`；2026-11-12 按"聚焦解题能力"重排）
+## 6. 正在跑（`pipeline2ah.sh`：2026-11-16 21:15 加 Llama 复现；`pipeline2ag.sh`：2026-11-16 21:00 加学生自写措辞；`pipeline2af.sh`：2026-11-16 19:40 宽松解析复测 GRPO；`pipeline2ae.sh`：2026-11-16 19:10 重训干净称硬币数据；`pipeline2ad.sh`：2026-11-16 13:45 宽松解析诊断 + 带格式奖励的随机措辞 GRPO；`pipeline2ac.sh`：2026-11-16 11:30 Parcels 全 21 题评测 + 干净称硬币数据；`pipeline2aa.sh`：2026-11-16 03:15 加随机措辞 GRPO；`pipeline2z.sh`：2026-11-15 20:30 加 Parcels 新种子复测；`pipeline2x.sh`：2026-11-15 19:30 加拒绝采样对照；`pipeline2w.sh`：2026-11-15 19:15 加 GRPO；`pipeline2v.sh`：2026-11-15 12:50 第二种技能的授人以渔；`pipeline2u.sh`：2026-11-15 12:30 算术层降学习率重训；`pipeline2t.sh`：2026-11-15 04:15 加带符号算术层；`pipeline2s.sh`：2026-11-14 22:10 加应用题层；`pipeline2r.sh`：2026-11-14 21:00 加宽松解析复测；`pipeline2q.sh`：2026-11-14 17:15 换成不破坏格式的课本；`pipeline2p.sh`：2026-11-14 教理论排最前，然后授人以渔 / 化陌生为熟悉；`pipeline2n.sh`：2026-11-14 512 诊断做完、去掉远迁移诊断，接着跑新种子复测；`pipeline2m.sh`：512 token 诊断；`pipeline2l.sh`：2026-11-13 把近迁移基线调到最前；`pipeline2k.sh`，日志 `runs/pipeline2.log`；2026-11-12 按"聚焦解题能力"重排）
 与另一个 agent 共用机器：每一步先等没有别的 7B 进程。代码冻结在 `frozen/`（max_tokens 256，可与已完成条件比较）。
 1. stick_diverse 收尾 → stick_workedcheck2（4 种游戏对照）
 2. 每步算术写出 + 检查：8 种游戏（q7_procdiverse）vs 4 种游戏（q7_proc4）
@@ -386,7 +389,7 @@ Ying："deepseek 不是有源码吗？你不能读一下？研究一下怎么做
 0. **（Ying 2026-11-15："这像 RSI"）** 现在的循环只在形式上像递归自我改进：诊断和新课本都来自模型外部，验证器和目标固定，也不会复利（学生变强不会让下一轮诊断变好）。直接的检验：把两步交给 Qwen 自己——读自己失败的对局写差距分析、自己把练习改写成多种措辞（验证器过滤），和外部写的多种措辞、原样重复比，测 Machine/Parcels。接近 20/20 = 闭环不需要更强的老师；做不到 = 瓶颈在诊断和出题，不在学习。排在 Parcels 之后。
 1. 结果出来后重跑 `analyze.py`，更新本报告和对照表。
 2. 加"从错误中学"和"交错 vs 分块"两个条件。
-3. 关键几条在第二个模型系列上重复（如 Llama-3.1-8B）。
+3. 关键几条在第二个模型系列上重复：只用本地开源模型（如 MLX 的 Llama-3.1-8B-Instruct-4bit），**不用付费 API**（Ying 2026-11-16：DeepSeek API 不用）。
 4. 核实 Große & Renkl 2007、Rohrer & Taylor 2007、Chi 1989 的引文。
 5. 发布流程：私有 repo → /pr-review + 个人信息扫描 → Zenodo → arXiv（arXiv 由 Ying 上传）。
 
