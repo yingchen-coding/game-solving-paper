@@ -1,0 +1,19 @@
+{
+ "policy": "mlx:mlx-community/Qwen2.5-7B-Instruct-4bit",
+ "adapter": "adapters/q7_coinclean2",
+ "system": "plain",
+ "playbook": null,
+ "teacher": null,
+ "ledger": false,
+ "check_tool": false,
+ "by_env": {
+  "parcels21": {
+   "n": 21,
+   "success": 0.6190476190476191,
+   "asked": 0.0,
+   "invalid_per_step": 0.03571428571428571,
+   "steps": 4.0,
+   "repeat_rate": 0.0
+  }
+ }
+}
