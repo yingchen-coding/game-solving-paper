@@ -440,10 +440,14 @@ independent tests. One layer is void: the signed-arithmetic adapter diverged in 
 
 The breakdown-then-retrain loop looks like recursive self-improvement only in form. The diagnosis and each new
 curriculum come from outside the model, the verifiers and goals are fixed, and nothing compounds: a better student
-does not make the next diagnosis better. The direct test is to hand both steps to the model, letting it read its
-own failed episodes and write its own varied wordings, filtered by the verifier, and compare with the varied wordings
-written for it. Next, besides that: a second skill for the varied-wording result (OddCoin, tested on a renamed twin,
-is running), learning from erroneous examples, interleaved versus blocked practice, and a second model family.
+does not make the next diagnosis better. We tested one step of closing it. Qwen was asked to propose new wordings for
+HiddenRule; a mechanical check (shape, no original or Machine words) kept 20 of 80 proposals, and they are narrow
+(almost all ``polynomial'', function $p$ or $P$, variable $y$ or $t$, probe verb always \texttt{PROBE}). Rebuilt with
+them, the same data solves Machine 18/20, against 6/20 for the repeated data (13 to 1, $p=.002$) and 20/20 for the
+experimenter's wordings (0 to 2, $p=.5$). The step a teacher did for the varied-wording result the student can do
+for itself, even with little variety; the diagnosis step is still ours. Next: how little variety suffices (one fixed
+alternative wording), learning from erroneous examples, interleaved versus blocked practice, and a second model family
+(a local Llama-3.1-8B run waits for disk space).
 
 \section{Related work}
 Expert iteration and self-taught reasoning fine-tune on a model's own verified successes
