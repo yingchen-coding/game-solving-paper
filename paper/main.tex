@@ -318,7 +318,10 @@ polynomial\ldots''), though it does so on HiddenRule; the varied model writes th
 eliminating with $g(1)$ and $g(-1)$, and is right in all 19. Skipped working is a symptom, not the cause: telling
 the repeated-data model to write one equation per observed value, solve step by step and substitute back doubles
 the replies that write equations (8 to 16 of 20) and leaves it at 6/20, and the same instruction drops the plain
-model from 13 to 4/20 (11 lost, 1 gained; $p=.012$), like the theorem summary before it.
+model from 13 to 4/20 (11 lost, 1 gained; $p=.012$), like the theorem summary before it. Asking the model,
+before it acts, to say which known problem the renamed task is and which old name each new name stands for (a prompt
+modelled on the teacher's ``make the unfamiliar familiar'') does the same: Machine falls from 13 to 5/20 (3 gained,
+11 lost; $p=.057$), and from 8 to 3 for the distilled model.
 
 The effect does not replicate on a second skill, and the reason is informative. We built Parcels, a renamed twin of
 OddCoin (parcels, \texttt{SCALE} with ``/'' between the pans, \texttt{CLAIM}; same seed, same puzzle), and varied
@@ -346,7 +349,14 @@ a group-relative policy gradient on HiddenRule and OddCoin in their original wor
 practice seed, reward 1 when the verifier accepts, advantage relative to the group, 60 iterations, LoRA as before.
 It improves the practised games (HiddenRule 4 to 10/20, $p=.070$; OddCoin 16 to 18) and not their renamed twins
 (Machine 13 to 10, Parcels 9 to 10). At this scale reinforcement learning also stays with the wording; it harms
-Machine less than distillation does (10 against 8). With the wording redrawn on every practice seed, the recipe that
+Machine less than distillation does (10 against 8). A rejection-sampling control, given the same budget of sampled
+episodes from the plain model (30 practice seeds, two games, four episodes each at temperature 0.9), keeps the 140
+wins and fine-tunes on them once. It matches GRPO on the practised games (HiddenRule 13/20 against plain 4, 12 to 3,
+$p=.035$; OddCoin 10 of 13 distinct puzzles, plain 10, GRPO 12) and beats it on Parcels, solving all 13 distinct
+puzzles against 7 for both GRPO and the plain model (6 to 0, $p=.031$); Machine is 14/20 (plain 13, GRPO 10). The
+online updates and the push-down on lost episodes add nothing measurable here. The Parcels result is on 13 puzzles
+and earlier Parcels gains shrank on the full set, so it is being re-run on all 21 puzzles and on 40 fresh Machine
+problems. With the wording redrawn on every practice seed, the recipe that
 made supervised training cross the rename, reinforcement learning gets worse everywhere (HiddenRule 0/20, OddCoin
 14, Machine 12, Parcels 6). The skill is not what broke: invalid moves rise from 2 to 198 across the 80 games (against GRPO on the original wording),
 nearly all of them a well-formed move behind a doubled or misplaced label (\texttt{Action: ACTION QUERY 0}), and in
@@ -428,7 +438,7 @@ Pressure (Yerkes--Dodson) & harms hard tasks & 16$\to$7/20 & same outcome, other
 Encouragement, mind-set & small effects at scale & none & same \\
 Far transfer is rare & near only & none to far problems & same \\
 Near transfer is common \citep{barnett2002} & same skill, new surface transfers & plain: 4/20 vs 13/20 on identical problems renamed; trained gains do not cross the rename unless the training varies the wording (20/20 vs 6/20) & different \\
-RL generalises, SFT memorises \citep{chu2025} & (a result on models) & policy gradient: practised 4$\to$10/20; renamed 13$\to$10, 9$\to$10 & different (at this scale) \\
+RL generalises, SFT memorises \citep{chu2025} & (a result on models) & policy gradient: practised 4$\to$10/20; renamed 13$\to$10, 9$\to$10; keeping sampled wins and fine-tuning does as well & different (at this scale) \\
 Variability of practice \citep{schmidt1975} & varied practice transfers better & varied games: better tool use, not more solved; varied wordings of one task: renamed task 6$\to$20/20 & same (wording) \\
 Given a free check & learners use it & rarely used & different \\
 Imitating narrated checks & --- & learns the claim, not the check & different \\

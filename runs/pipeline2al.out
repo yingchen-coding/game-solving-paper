@@ -1,0 +1,11 @@
+[2026-11-17 19:20:11] p21_grpo_randfmt
+[2026-11-17 19:24:33] p21_grpo
+[2026-11-17 19:29:35] repS_machine_grpo_randfmt
+[2026-11-17 20:27:06] repS_machine_plain
+[2026-11-17 23:46:57] repS_machine_grpo
+[2026-11-17 23:58:16] collect_rft
+[2026-11-18 06:08:39] train adapters/q7_rft
+[2026-11-18 08:28:19] twin_rft
+[2026-11-18 08:46:59] near_familiar
+[2026-11-18 10:09:25] near_distill_familiar
+[2026-11-18 10:23:19] rep_selfexplain
