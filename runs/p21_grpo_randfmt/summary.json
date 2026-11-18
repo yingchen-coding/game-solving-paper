@@ -1,0 +1,19 @@
+{
+ "policy": "mlx:mlx-community/Qwen2.5-7B-Instruct-4bit",
+ "adapter": "adapters/q7_grpo_randfmt",
+ "system": "plain",
+ "playbook": null,
+ "teacher": null,
+ "ledger": false,
+ "check_tool": false,
+ "by_env": {
+  "parcels21": {
+   "n": 21,
+   "success": 0.7619047619047619,
+   "asked": 0.0,
+   "invalid_per_step": 0.08333333333333333,
+   "steps": 3.4285714285714284,
+   "repeat_rate": 0.041666666666666664
+  }
+ }
+}

@@ -363,7 +363,11 @@ model on Machine (10 to 10). The direction matches supervised training: the gain
 practice varied the wording. It is not usable as trained, since its format has to be read leniently. Adding R1's
 format term to the reward (reward minus the share of invalid moves) repairs the format (invalid moves 198 to 19 over
 80 games) and, read with the standard parser, scores HiddenRule 11/20, OddCoin 19, Parcels 11 of 13 distinct puzzles
-(plain 7) and Machine 13/20 (plain 13). The renamed tests on fresh problems with the standard parser are running.
+(plain 7) and Machine 13/20 (plain 13). Re-tested on fresh problems with the standard parser, it solves 16 of the 21 Parcels puzzles (plain 13, 8 to 5)
+and 28 of 40 fresh Machine problems (plain 19, 15 to 6, $p=.078$), the same Machine gain as when read leniently, so
+that gain was not made by the parser; pooled, 23 to 11 ($p=.058$). Every one of its 12 Machine losses had read three
+or more values before submitting, so what fails is the algebra, not the probing: half are a long derivation cut
+off before its Action line, then a wrong formula.
 
 \subsection{Teaching the theory: stated theorems become inert}
 Schools teach the theorem first and the word problems after. We wrote a five-chapter textbook in abstract
