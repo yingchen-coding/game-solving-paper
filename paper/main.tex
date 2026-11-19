@@ -40,7 +40,10 @@ problems in several wordings: then the renamed problem is solved 20/20, against 
 from 13/20 to 1/20: the model announces that it is using the theory and stops doing the arithmetic. What works is
 self-explanation: with the same states and expert moves, training on reasoning the model wrote itself instead of
 the expert's prose lifts the black-box task from 4/20 to 12/20 (the expert prose gives 0--2/20), and on-policy
-distillation agrees; both gains are on practised tasks. Fewer evidence-contradicting actions on never-practised problems
+distillation agrees; both gains are on practised tasks. Fine-tuning once on the model's own winning practice
+episodes (rejection sampling) does reach the renamed problems: on fresh problems it solves 19/21 Parcels puzzles
+(plain 13) and 34/40 Machine problems (plain 19), 27 to 6 pooled ($p<.001$), and beats policy-gradient RL given
+the same samples 25 to 3. Fewer evidence-contradicting actions on never-practised problems
 come from having the verifier available, not from the training: the same distilled model contradicts its evidence
 in 13 of 20 episodes without the tool and 5 with it. Across all conditions one mechanism predicts failure: an episode
 containing an action that contradicts the model's own earlier evidence almost never succeeds.
@@ -354,9 +357,12 @@ episodes from the plain model (30 practice seeds, two games, four episodes each 
 wins and fine-tunes on them once. It matches GRPO on the practised games (HiddenRule 13/20 against plain 4, 12 to 3,
 $p=.035$; OddCoin 10 of 13 distinct puzzles, plain 10, GRPO 12) and beats it on Parcels, solving all 13 distinct
 puzzles against 7 for both GRPO and the plain model (6 to 0, $p=.031$); Machine is 14/20 (plain 13, GRPO 10). The
-online updates and the push-down on lost episodes add nothing measurable here. The Parcels result is on 13 puzzles
-and earlier Parcels gains shrank on the full set, so it is being re-run on all 21 puzzles and on 40 fresh Machine
-problems. With the wording redrawn on every practice seed, the recipe that
+online updates and the push-down on lost episodes add nothing measurable here. Because earlier Parcels gains shrank
+on the full puzzle set, we re-ran it on fresh problems with the frozen strict parser: all 21 Parcels puzzles
+(19/21; plain 13, 8 to 2; GRPO 12, 7 to 0, $p=.016$) and 40 fresh Machine seeds (34/40; plain 19, 19 to 4,
+$p=.003$; GRPO 19, 18 to 3, $p=.001$). Pooled over the two renamed problems it beats the plain model 27 to 6
+($p<.001$) and GRPO 25 to 3 ($p<.001$); against GRPO with randomised wording and the format reward (16/21, 28/40)
+it is 14 to 5 ($p=.064$). Keeping the model's own wins is the cheapest recipe here that crosses the rename. With the wording redrawn on every practice seed, the recipe that
 made supervised training cross the rename, reinforcement learning gets worse everywhere (HiddenRule 0/20, OddCoin
 14, Machine 12, Parcels 6). The skill is not what broke: invalid moves rise from 2 to 198 across the 80 games (against GRPO on the original wording),
 nearly all of them a well-formed move behind a doubled or misplaced label (\texttt{Action: ACTION QUERY 0}), and in
@@ -438,7 +444,7 @@ Pressure (Yerkes--Dodson) & harms hard tasks & 16$\to$7/20 & same outcome, other
 Encouragement, mind-set & small effects at scale & none & same \\
 Far transfer is rare & near only & none to far problems & same \\
 Near transfer is common \citep{barnett2002} & same skill, new surface transfers & plain: 4/20 vs 13/20 on identical problems renamed; trained gains do not cross the rename unless the training varies the wording (20/20 vs 6/20) & different \\
-RL generalises, SFT memorises \citep{chu2025} & (a result on models) & policy gradient: practised 4$\to$10/20; renamed 13$\to$10, 9$\to$10; keeping sampled wins and fine-tuning does as well & different (at this scale) \\
+RL generalises, SFT memorises \citep{chu2025} & (a result on models) & policy gradient: practised 4$\to$10/20; renamed 13$\to$10, 9$\to$10; keeping sampled wins and fine-tuning crosses the rename (27 to 6) & different (at this scale) \\
 Variability of practice \citep{schmidt1975} & varied practice transfers better & varied games: better tool use, not more solved; varied wordings of one task: renamed task 6$\to$20/20 & same (wording) \\
 Given a free check & learners use it & rarely used & different \\
 Imitating narrated checks & --- & learns the claim, not the check & different \\
